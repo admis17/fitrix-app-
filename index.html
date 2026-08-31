@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fitomatic - Portal</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+body{background:#f1f5f9;color:#0f172a;display:flex;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+.sidebar{width:240px;background:#0f172a;color:#cbd5e1;display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:hidden}
+.brand{padding:16px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1e293b}
+.brand-icon{width:32px;height:32px;background:#ef4444;display:grid;place-items:center;border-radius:8px;font-weight:800;color:#fff}
+.brand b{color:#fff;letter-spacing:.5px;font-size:14px}
+.brand b span{color:#ef4444}
+.brand p{font-size:10px;color:#64748b}
+.menu{padding:10px;flex:1;overflow:auto}
+.menu-title{font-size:10px;letter-spacing:1px;color:#64748b;padding:10px 8px 4px}
+.menu a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;margin:2px 0;cursor:pointer}
+.menu a.active,.menu a:hover{background:#1e293b;color:#fff}
+.menu a.active{border-left:3px solid #ef4444}
+.bottom{padding:10px;border-top:1px solid #1e293b;display:flex;gap:10px;align-items:center}
+.avatar{width:30px;height:30px;border-radius:50%;background:#ef4444;display:grid;place-items:center;color:#fff;font-weight:700;font-size:11px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.topbar h1{font-size:16px}
+.topbar p{font-size:12px;color:#64748b}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:7px 12px;min-width:220px}
+.search input{border:0;background:transparent;outline:0;font-size:13px;width:100%}
+.btn{padding:8px 14px;border-radius:8px;border:0;font-weight:600;font-size:13px}
+.btn-red{background:#ef4444;color:#fff}
+.btn-white{background:#fff;border:1px solid #e2e8f0}
+.btn-sm{padding:6px 10px;font-size:12px}
+.content{padding:18px;overflow:auto}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;margin-bottom:14px}
+.card-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;gap:8px}
+.card-head h3{font-size:13px}
+.card-head a{font-size:12px;color:#ef4444;font-weight:600}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;color:#64748b;text-align:left;padding:9px 12px;background:#f8fafc;text-transform:uppercase;letter-spacing:.4px}
+td{padding:10px 12px;font-size:13px;border-top:1px solid #f1f5f9}
+.badge{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
+.ok{background:#dcfce7;color:#166534}
+.due{background:#fee2e2;color:#991b1b}
+.pending{background:#fef9c3;color:#854d0e}
+.info{background:#dbeafe;color:#1e40af}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center}
+.stat small{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.3px}
+.stat b{font-size:18px}
+.page{display:none}
+.page.active{display:block}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters input,.filters select{padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;background:#fff}
+.grid2{display:grid;grid-template-columns:1.6fr .9fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.login-wrap{min-height:100vh;background:#0f172a;display:grid;place-items:center;padding:20px}
+.login-card{background:#fff;border-radius:16px;padding:24px;width:360px;max-width:100%}
+.login-card h2{font-size:18px}
+.login-card p{font-size:12px;color:#64748b;margin:4px 0 14px}
+.login-card label{font-size:12px;font-weight:600;display:block;margin:8px 0 4px}
+.login-card input{width:100%;padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px}
+@media(max-width:900px){
+  .sidebar{position:fixed;left:-240px;z-index:20;transition:.2s}
+  .sidebar.open{left:0}
+  .stats{grid-template-columns:1fr 1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .search{min-width:0;flex:1}
+  .hamburger{display:block !important}
+}
+.hamburger{display:none;background:#0f172a;color:#fff;border:0;padding:8px 10px;border-radius:8px}
+</style>
+</head>
+<body>
+<!-- LOGIN -->
+<div id="loginPage" class="login-wrap">
+  <div class="login-card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><div class="brand-icon">F</div><b>FITO<span style="color:#ef4444">MATIC</span></b></div>
+    <h2>Login to Fitomatic</h2><p>PayPer Software • Gym Management</p>
+    <label>Only Email Id</label><input id="email" value="admin@fitomatic.com">
+    <label>Password</label><input id="pass" type="password" value="123456">
+    <button onclick="login()" class="btn btn-red" style="width:100%;margin-top:14px">Login</button>
+    <div style="display:flex;justify-content:space-between;margin-top:10px"><a href="#" style="font-size:12px;color:#ef4444">Resend OTP</a><a href="#" style="font-size:12px;color:#64748b">Forgotten Password?</a></div>
+    <p style="text-align:center;margin-top:12px;font-size:11px">Handcrafted in INDIA by PayPer</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;flex:1;min-width:0;display:none;flex-direction:row">
+<nav class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-icon">F</div><div><b>FITO<span>MATIC</span></b><p>PAYPER SOFTWARE</p></div></div>
+  <div class="menu">
+    <div class="menu-title">MAIN</div>
+    <a data-page="dashboard" class="active">▦ Dashboard</a>
+    <a data-page="members">👥 Members</a>
+    <a data-page="enquiries">📋 Enquiries</a>
+    <a data-page="attendance">✓ Attendance</a>
+    <a data-page="fees">₹ Fees & Payments</a>
+    <div class="menu-title">MANAGE</div>
+    <a data-page="workout">💪 Workout Plans</a>
+    <a data-page="diet">🥗 Diet Plans</a>
+    <a data-page="staff">👨‍🏫 Staff</a>
+    <a data-page="inventory">📦 Inventory</a>
+    <a data-page="reports">📊 Reports</a>
+    <a data-page="settings">⚙ Settings</a>
+    <a onclick="logout()" style="color:#f87171">⎋ Logout</a>
+  </div>
+  <div class="bottom"><div class="avatar">AP</div><div><b style="font-size:11px;color:#fff">Ashutosh Pandit</b><p style="font-size:10px;color:#64748b">Admin</p></div></div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <div><h1 id="pageTitle">Dashboard</h1><p id="pageSub">Welcome back, track your gym at a glance</p></div>
+    <label class="search">🔍 <input placeholder="Search members, phone..."></label>
+    <button class="btn btn-white btn-sm">Export</button>
+    <button class="btn btn-red btn-sm">+ Add Member</button>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats">
+        <div class="stat"><div><small>Total Members</small><b>342</b><small style="color:#16a34a">↑ 12 this month</small></div>👥</div>
+        <div class="stat"><div><small>Active</small><b>298</b><small>87% retention</small></div>✅</div>
+        <div class="stat"><div><small>Fees Pending</small><b>24 • ₹48,600</b><small style="color:#dc2626">Action needed</small></div>💳</div>
+        <div class="stat"><div><small>Today Attendance</small><b>156 / 298</b><small>52% present</small></div>📅</div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="card-head"><h3>Recent Members</h3><a href="#">View all →</a></div>
+          <table><tr><th>Member</th><th>Plan</th><th>Expiry</th><th>Status</th></tr>
+          <tr><td><b>Rahul Kumar</b><br><small style="color:#64748b">RK-1042</small></td><td>12M</td><td>12 Sep 2026</td><td><span class="badge ok">Active</span></td></tr>
+          <tr><td><b>Anjali Singh</b><br><small style="color:#64748b">AS-1043</small></td><td>3M</td><td>02 Sep 2026</td><td><span class="badge due">Due</span></td></tr>
+          <tr><td><b>Vikash Patel</b><br><small style="color:#64748b">VP-1044</small></td><td>6M</td><td>28 Dec 2026</td><td><span class="badge ok">Active</span></td></tr>
+          <tr><td><b>Sneha Verma</b><br><small style="color:#64748b">SV-1045</small></td><td>1M</td><td>31 Aug 2026</td><td><span class="badge pending">Expiring</span></td></tr>
+          </table></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card"><div class="card-head"><h3>Quick Actions</h3></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px"><a class="card" style="padding:12px;text-align:center">➕<br><b style="font-size:12px">Enquiry</b></a><a class="card" style="padding:12px;text-align:center">✓<br><b style="font-size:12px">Attendance</b></a><a class="card" style="padding:12px;text-align:center">₹<br><b style="font-size:12px">Collect Fee</b></a><a class="card" style="padding:12px;text-align:center">📨<br><b style="font-size:12px">Send Alert</b></a></div></div>
+          <div class="card"><div class="card-head"><h3>Renewals This Week</h3><span class="badge due">8</span></div><div style="padding:12px"><p style="font-size:12px;color:#64748b">8 members expiring • <a style="color:#ef4444">Send reminders</a></p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div id="page-members" class="page">
+      <div class="card"><div class="card-head"><h3>Members (342)</h3><div class="filters"><input placeholder="Search"><select><option>All Plans</option></select><select><option>All Status</option></select><button class="btn btn-red btn-sm">+ Add</button></div></div>
+      <table><tr><th>ID</th><th>Name / Phone</th><th>Plan</th><th>Joined</th><th>Expiry</th><th>Status</th><th></th></tr>
+      <tr><td>RK-1042</td><td><b>Rahul Kumar</b><br><small>98765 43210</small></td><td>Annual ₹12k</td><td>12 Sep 2025</td><td>12 Sep 2026</td><td><span class="badge ok">Active</span></td><td><a style="color:#2563eb;font-size:12px">View</a></td></tr>
+      <tr><td>AS-1043</td><td><b>Anjali Singh</b><br><small>98765 43211</small></td><td>Quarterly ₹4.5k</td><td>02 Jun 2026</td><td>02 Sep 2026</td><td><span class="badge due">Due</span></td><td><a style="color:#2563eb;font-size:12px">Pay</a></td></tr>
+      <tr><td>VP-1044</td><td><b>Vikash Patel</b><br><small>98765 43212</small></td><td>Half-Yearly ₹7k</td><td>28 Jun 2026</td><td>28 Dec 2026</td><td><span class="badge ok">Active</span></td><td><a style="color:#2563eb;font-size:12px">View</a></td></tr>
+      </table></div>
+    </div>
+
+    <!-- ENQUIRIES -->
+    <div id="page-enquiries" class="page">
+      <div class="card"><div class="card-head"><h3>Enquiries / Leads</h3><button class="btn btn-red btn-sm">+ New Enquiry</button></div>
+      <table><tr><th>Date</th><th>Name</th><th>Phone</th><th>Source</th><th>Follow-up</th><th>Status</th></tr>
+      <tr><td>30 Aug 2026</td><td>Aman Gupta</td><td>98123 45678</td><td>Walk-in</td><td>01 Sep</td><td><span class="badge pending">Pending</span></td></tr>
+      <tr><td>29 Aug 2026</td><td>Neha Sharma</td><td>98123 45679</td><td>Instagram</td><td>30 Aug</td><td><span class="badge info">Called</span></td></tr>
+      <tr><td>28 Aug 2026</td><td>Rohit Jain</td><td>98123 45680</td><td>Referral</td><td>—</td><td><span class="badge ok">Joined</span></td></tr>
+      </table></div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div id="page-attendance" class="page">
+      <div class="grid2">
+        <div class="card"><div class="card-head"><h3>Mark Attendance — 31 Aug 2026</h3><div class="filters"><input type="date" value="2026-08-31"><button class="btn btn-red btn-sm">Save</button></div></div>
+        <table><tr><th>Member</th><th>Check-in</th><th>Status</th></tr>
+        <tr><td>Rahul Kumar</td><td>06:15 AM</td><td><span class="badge ok">Present</span></td></tr>
+        <tr><td>Anjali Singh</td><td>—</td><td><span class="badge due">Absent</span></td></tr>
+        <tr><td>Vikash Patel</td><td>07:02 AM</td><td><span class="badge ok">Present</span></td></tr>
+        </table></div>
+        <div class="card"><div class="card-head"><h3>Monthly View</h3></div><div style="padding:14px"><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:11px;color:#64748b"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px;text-align:center;font-size:12px"><span style="padding:8px;background:#dcfce7;border-radius:8px">25</span><span style="padding:8px;background:#dcfce7;border-radius:8px">26</span><span style="padding:8px;background:#fee2e2;border-radius:8px">27</span><span style="padding:8px;background:#ef4444;color:#fff;border-radius:8px">31</span><span style="padding:8px;border:1px solid #e2e8f0;border-radius:8px">1</span><span>2</span><span>3</span></div><p style="font-size:12px;color:#64748b;margin-top:12px">Present: 156 • Absent: 142 • Staff: 9/10</p></div></div>
+      </div>
+    </div>
+
+    <!-- FEES -->
+    <div id="page-fees" class="page">
+      <div class="stats" style="grid-template-columns:repeat(3,1fr)"><div class="stat"><div><small>Collected (Aug)</small><b>₹1,84,500</b></div>💰</div><div class="stat"><div><small>Pending</small><b>₹48,600</b></div>⏰</div><div class="stat"><div><small>Expenses</small><b>₹32,100</b></div>📉</div></div>
+      <div class="card"><div class="card-head"><h3>Payments</h3><div class="filters"><input type="date"><select><option>All Methods</option><option>Cash</option><option>UPI</option></select><button class="btn btn-red btn-sm">+ Collect</button></div></div>
+      <table><tr><th>Receipt</th><th>Member</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr>
+      <tr><td>#10442</td><td>Rahul Kumar</td><td>₹12,000</td><td>UPI</td><td>30 Aug 2026</td><td><span class="badge ok">Paid</span></td></tr>
+      <tr><td>#10443</td><td>Anjali Singh</td><td>₹4,500</td><td>—</td><td>Due 02 Sep</td><td><span class="badge due">Pending</span></td></tr>
+      </table></div>
+    </div>
+
+    <!-- WORKOUT -->
+    <div id="page-workout" class="page">
+      <div class="grid3"><div class="card" style="padding:14px"><h3 style="font-size:13px">Beginner Fat Loss</h3><p style="font-size:11px;color:#64748b">4 weeks • 5 days/week</p><p style="font-size:12px;margin:8px 0">Chest, Cardio, Full-body</p><span class="badge info">42 assigned</span></div>
+      <div class="card" style="padding:14px"><h3 style="font-size:13px">Muscle Gain Pro</h3><p style="font-size:11px;color:#64748b">8 weeks • 6 days/week</p><p style="font-size:12px;margin:8px 0">Push/Pull/Legs + Core</p><span class="badge ok">68 assigned</span></div>
+      <div class="card" style="padding:14px;border:1px dashed #cbd5e1;display:grid;place-items:center;min-height:120px"><a style="color:#ef4444;font-weight:600">+ Create Plan</a></div></div>
+    </div>
+
+    <!-- DIET -->
+    <div id="page-diet" class="page">
+      <div class="grid3"><div class="card" style="padding:14px"><h3 style="font-size:13px">Weight Loss 1800 kcal</h3><p style="font-size:11px;color:#64748b">Veg • High Protein</p><span class="badge ok">31 assigned</span></div>
+      <div class="card" style="padding:14px"><h3 style="font-size:13px">Bulk 2800 kcal</h3><p style="font-size:11px;color:#64748b">Non-veg • 5 meals</p><span class="badge pending">18 assigned</span></div>
+      <div class="card" style="padding:14px;border:1px dashed #cbd5e1;display:grid;place-items:center"><a style="color:#ef4444;font-weight:600">+ Create Diet</a></div></div>
+    </div>
+
+    <!-- STAFF -->
+    <div id="page-staff" class="page">
+      <div class="card"><div class="card-head"><h3>Staff / Trainers</h3><button class="btn btn-red btn-sm">+ Add Staff</button></div>
+      <table><tr><th>Name</th><th>Role</th><th>Phone</th><th>Shift</th><th>Status</th></tr>
+      <tr><td><b>Amit Trainer</b></td><td>Senior Trainer</td><td>98100 00001</td><td>Morning</td><td><span class="badge ok">Present</span></td></tr>
+      <tr><td><b>Pooja Frontdesk</b></td><td>Reception</td><td>98100 00002</td><td>Evening</td><td><span class="badge ok">Present</span></td></tr>
+      </table></div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="page-inventory" class="page">
+      <div class="card"><div class="card-head"><h3>Inventory</h3><button class="btn btn-red btn-sm">+ Add Item</button></div>
+      <table><tr><th>Item</th><th>Qty</th><th>Condition</th><th>Last Service</th></tr>
+      <tr><td>Treadmill #3</td><td>1</td><td><span class="badge ok">Good</span></td><td>15 Aug 2026</td></tr>
+      <tr><td>Dumbbells 5-30kg</td><td>12 pairs</td><td><span class="badge pending">Worn</span></td><td>01 Jul 2026</td></tr>
+      </table></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="page-reports" class="page">
+      <div class="grid2">
+        <div class="card"><div class="card-head"><h3>Revenue (Last 6 months)</h3></div><div style="padding:14px;display:flex;align-items:end;gap:8px;height:140px"><div style="flex:1;background:#e2e8f0;height:40%;border-radius:6px"></div><div style="flex:1;background:#e2e8f0;height:60%;border-radius:6px"></div><div style="flex:1;background:#e2e8f0;height:50%;border-radius:6px"></div><div style="flex:1;background:#ef4444;height:85%;border-radius:6px"></div><div style="flex:1;background:#e2e8f0;height:70%;border-radius:6px"></div><div style="flex:1;background:#e2e8f0;height:90%;border-radius:6px"></div></div><p style="font-size:11px;color:#64748b;padding:0 14px 12px">Aug highest: ₹1.84L</p></div>
+        <div class="card"><div class="card-head"><h3>Export Reports</h3></div><div style="padding:14px;display:flex;flex-direction:column;gap:8px"><button class="btn btn-white">Members CSV</button><button class="btn btn-white">Fees Report</button><button class="btn btn-white">Attendance XLS</button></div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" class="page">
+      <div class="grid2">
+        <div class="card"><div class="card-head"><h3>Gym Profile</h3></div><div style="padding:14px"><label style="font-size:12px;font-weight:600">Gym Name</label><input value="Fitomatic Fitness Club" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0 10px"><label style="font-size:12px;font-weight:600">Address</label><input value="Ahmedabad, Gujarat" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:8px;margin:4px 0"><button class="btn btn-red" style="margin-top:12px">Save</button></div></div>
+        <div class="card"><div class="card-head"><h3>Plans & Pricing</h3></div><table><tr><th>Plan</th><th>Price</th><th></th></tr><tr><td>Monthly</td><td>₹1,500</td><td><a style="color:#ef4444;font-size:12px">Edit</a></td></tr><tr><td>Quarterly</td><td>₹4,500</td><td><a style="color:#ef4444;font-size:12px">Edit</a></td></tr><tr><td>Annual</td><td>₹12,000</td><td><a style="color:#ef4444;font-size:12px">Edit</a></td></tr></table></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+function login(){
+  document.getElementById('loginPage').style.display='none';
+  const app=document.getElementById('app');
+  app.style.display='flex';
+}
+function logout(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginPage').style.display='grid';
+}
+const titles={
+  dashboard:['Dashboard','Welcome back, track your gym at a glance'],
+  members:['Members','All registered members'],
+  enquiries:['Enquiries','Leads and follow-ups'],
+  attendance:['Attendance','Daily & monthly attendance'],
+  fees:['Fees & Payments','Collections and dues'],
+  workout:['Workout Plans','Assign training plans'],
+  diet:['Diet Plans','Nutrition plans'],
+  staff:['Staff','Trainers and frontdesk'],
+  inventory:['Inventory','Equipment & stock'],
+  reports:['Reports','Revenue and exports'],
+  settings:['Settings','Gym profile and pricing']
+};
+document.querySelectorAll('.menu a[data-page]').forEach(a=>{
+  a.addEventListener('click',()=>{
+    document.querySelectorAll('.menu a').forEach(x=>x.classList.remove('active'));
+    a.classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+a.dataset.page).classList.add('active');
+    document.getElementById('pageTitle').textContent=titles[a.dataset.page][0];
+    document.getElementById('pageSub').textContent=titles[a.dataset.page][1];
+    document.getElementById('sidebar').classList.remove('open');
+    window.scrollTo(0,0);
+  });
+});
+</script>
+</body>
+</html>
