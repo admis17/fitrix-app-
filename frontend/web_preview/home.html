@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FitRix — Home</title>
+<style>
+:root{--bg:#121212;--surface:#1E1E1E;--surface2:#2A2A2A;--line:#2E3338;--line-hover:#3A4047;--text:#EDEFE9;--muted:#9AA0A6;--volt:#C6FF00;--volt-hover:#D4FF33;--heat:#FF5B3D;--r:16px;--r-lg:20px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;min-height:100vh;line-height:1.4}
+a{color:inherit;text-decoration:none}
+/* ===== NAVBAR: logo left | search center | wallet+profile right ===== */
+.navbar{position:sticky;top:0;z-index:20;background:rgba(18,18,18,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:12px 20px}
+.nav-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--volt);display:grid;place-items:center;font-weight:900;color:#121212;font-size:15px}
+.brand{font-weight:900;font-size:20px;letter-spacing:-.6px;white-space:nowrap}
+.brand span{color:var(--volt)}
+.nav-center{flex:1;display:flex;justify-content:center;max-width:520px;margin:0 auto}
+.search-wrap{display:flex;align-items:center;flex:1;max-width:520px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 14px;height:40px;transition:.15s}
+.search-wrap:focus-within{border-color:var(--line-hover);background:var(--surface2)}
+.search-wrap input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:13.5px;width:100%}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-icon{color:var(--muted);margin-right:10px;font-size:14px}
+.search-clear{background:none;border:0;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:6px;display:none;font-size:14px}
+.search-clear.show{display:block}
+.search-clear:hover{color:var(--text)}
+.search-toggle{display:none;background:var(--surface);border:1px solid var(--line);border-radius:50%;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.iconbtn{background:var(--surface);border:1px solid var(--line);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;position:relative;transition:.15s}
+.iconbtn:hover{border-color:var(--line-hover);background:var(--surface2)}
+.badge-dot{position:absolute;top:-1px;right:-1px;width:9px;height:9px;background:var(--volt);border-radius:50%;border:2px solid var(--bg)}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--volt),#8BC500);display:grid;place-items:center;font-weight:800;color:#121212;font-size:13px;cursor:pointer;border:1.5px solid var(--line)}
+@media(max-width:720px){
+  .nav-center{position:absolute;left:12px;right:12px;top:62px;background:var(--bg);padding:10px 12px 12px;border-bottom:1px solid var(--line);display:none}
+  .nav-center.open{display:flex}
+  .nav-center.open .search-wrap{max-width:none}
+  .search-toggle{display:flex}
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 20px 48px}
+.hero{margin-bottom:8px}
+.hero h1{font-weight:900;font-size:30px;letter-spacing:-.8px;line-height:1}
+.hero p{color:var(--muted);font-size:13px;margin-top:6px}
+.sec{margin:28px 0 12px}
+.sec h3{font-size:11.5px;letter-spacing:.9px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.sec p{font-size:11.5px;color:var(--muted);margin-top:4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px;transition:.15s}
+.card-hover:hover{border-color:var(--line-hover);transform:translateY(-1px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip-nav{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:9px 14px;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s;color:var(--text)}
+.chip-nav:hover{border-color:var(--line-hover);background:var(--surface2)}
+/* Featured video cover */
+.featured-card{padding:0;overflow:hidden}
+.video-cover{height:190px;position:relative;overflow:hidden;background:
+  linear-gradient(105deg, rgba(198,255,0,.18) 0%, transparent 45%),
+  linear-gradient(to top, rgba(0,0,0,.62) 0%, rgba(0,0,0,.18) 55%, rgba(0,0,0,0) 100%),
+  radial-gradient(ellipse at 75% 30%, rgba(198,255,0,.22), transparent 40%),
+  linear-gradient(135deg, #1B2600 0%, #243600 30%, #0F1400 70%, #1A1A1A 100%);
+  display:flex;align-items:center;justify-content:center}
+.video-cover::after{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,.02) 40px, rgba(255,255,255,.02) 41px);
+  opacity:.5}
+.play-btn{position:relative;z-index:1;width:58px;height:58px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 24px rgba(0,0,0,.45);cursor:pointer;transition:.15s}
+.play-btn:hover{transform:scale(1.05)}
+.play-btn span{margin-left:2px;font-size:22px;color:#121212}
+.video-meta{position:absolute;bottom:12px;left:14px;right:14px;z-index:1;display:flex;justify-content:space-between;align-items:center}
+.video-badge{background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:11px;font-weight:700;padding:6px 9px;border-radius:8px}
+.video-duration{background:rgba(0,0,0,.65);color:#fff;font-size:11px;font-weight:600;padding:5px 7px;border-radius:6px}
+.featured-body{padding:16px 18px 18px}
+.featured-body h2{font-size:17px;font-weight:900;letter-spacing:-.3px}
+.featured-body .desc{color:var(--muted);font-size:12.5px;margin-top:6px;line-height:1.45}
+.filter-label{font-size:11px;color:var(--muted);margin-top:14px;letter-spacing:.3px}
+.filter-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.filter-chip{border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--line);background:var(--surface);color:var(--text);display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.filter-chip:hover{border-color:var(--line-hover)}
+.filter-chip.active{background:var(--volt);color:#121212;border-color:var(--volt);box-shadow:0 2px 10px rgba(198,255,0,.22)}
+.filter-chip.active:hover{background:var(--volt-hover)}
+.filter-hint{font-size:11px;color:var(--muted);margin-top:8px}
+/* Section list cards */
+.list-stack{display:flex;flex-direction:column;gap:12px}
+.list-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s}
+.list-card:hover{border-color:var(--line-hover);background:var(--surface2);transform:translateY(-1px)}
+.list-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.list-icon.volt{background:rgba(198,255,0,.12);border:1px solid rgba(198,255,0,.22);color:var(--volt)}
+.list-icon.heat{background:rgba(255,91,61,.12);border:1px solid rgba(255,91,61,.18);color:var(--heat)}
+.list-icon.neutral{background:var(--surface2);border:1px solid var(--line);color:var(--text)}
+.list-main{flex:1;min-width:0}
+.list-main b{font-size:14px;font-weight:700;display:block}
+.list-main span{font-size:12px;color:var(--muted);display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.list-chevron{color:var(--muted);font-size:14px}
+.mini-bar{height:6px;background:var(--surface2);border-radius:6px;overflow:hidden;margin-top:8px}
+.mini-bar i{display:block;height:100%;background:var(--volt);border-radius:6px}
+.row2{display:flex;gap:12px}
+.row2>.card{flex:1}
+.stat-big{font-size:26px;font-weight:900;line-height:1}
+.muted{color:var(--muted);font-size:12px}
+.hidden{display:none !important}
+.empty-state{padding:28px;text-align:center;color:var(--muted);font-size:13px;display:none}
+.empty-state.show{display:block}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo">F</div>
+    <div class="brand">FIT<span>RIX</span></div>
+  </div>
+  <div class="nav-center" id="navCenter">
+    <label class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="universalSearch" placeholder="Search challenges, trainers, workouts…" autocomplete="off" aria-label="Search">
+      <button class="search-clear" id="clearSearch" aria-label="Clear search">✕</button>
+    </label>
+  </div>
+  <div class="nav-right">
+    <button class="search-toggle" id="searchToggle" aria-label="Open search">⌕</button>
+    <button class="iconbtn" onclick="location.href='frontend/web_preview/index.html#wallet'" title="Wallet" aria-label="Wallet">◈<span class="badge-dot"></span></button>
+    <div class="avatar" onclick="location.href='frontend/web_preview/index.html#profile'" title="Profile" aria-label="Profile">JM</div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <div class="hero">
+    <h1>Home</h1>
+    <p>Your training at a glance — challenges, streaks and today's plan</p>
+  </div>
+  <!-- search result count: hidden until searching, grammar-correct -->
+  <div id="searchCount" class="muted" style="display:none;margin-top:8px;font-size:12.5px"></div>
+
+  <div class="sec"><h3>Quick pages</h3></div>
+  <div class="chips" id="chips">
+    <span class="chip-nav" data-k="challenges">🏆 Challenges</span>
+    <span class="chip-nav" data-k="streaks">🔥 Streaks</span>
+    <span class="chip-nav" data-k="today goal">▦ Today goal</span>
+    <span class="chip-nav" data-k="progress">↗ Progress</span>
+    <span class="chip-nav" data-k="wallet">◈ Wallet</span>
+    <span class="chip-nav" data-k="profile">☺ Profile</span>
+  </div>
+
+  <div class="sec"><h3>Featured challenge</h3><p>Hand-picked for your category</p></div>
+  <div class="card featured-card card-hover" id="featured" data-search="september sweat challenge strength cardio yoga" style="cursor:pointer" onclick="location.href='frontend/web_preview/index.html#challenges'">
+    <div class="video-cover">
+      <div class="play-btn"><span>▶</span></div>
+      <div class="video-meta">
+        <span class="video-badge">▶ Challenge preview</span>
+        <span class="video-duration">1:24</span>
+      </div>
+    </div>
+    <div class="featured-body">
+      <h2>September Sweat Challenge</h2>
+      <div class="desc">Log 20 workouts this month to unlock the club merch drop and 500 bonus points. Filmed by coaches at your home club.</div>
+      <div class="filter-label">Filter by category</div>
+      <div class="filter-chips" id="categoryChips">
+        <button class="filter-chip active" data-cat="Strength" aria-pressed="true">✓ Strength</button>
+        <button class="filter-chip" data-cat="Cardio" aria-pressed="false">Cardio</button>
+        <button class="filter-chip" data-cat="Yoga" aria-pressed="false">Yoga</button>
+      </div>
+      <div class="filter-hint" id="filterHint">Showing challenges for <b style="color:var(--text)">Strength</b></div>
+    </div>
+  </div>
+
+  <div class="sec"><h3>Streak &amp; check-in</h3></div>
+  <div class="row2">
+    <div class="card card-hover" data-search="streak 12 day fire attendance" style="cursor:pointer" onclick="location.href='frontend/web_preview/index.html#streaks'">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="stat-big" style="color:var(--heat)">12</div><div class="muted" style="margin-top:4px">Day streak 🔥</div></div>
+        <div style="background:rgba(255,91,61,.12);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px">🔥</div>
+      </div>
+      <div class="muted" style="margin-top:10px;font-size:11.5px">Best 21 · rewards at 15</div>
+      <div class="mini-bar" style="margin-top:8px"><i style="width:80%"></i></div>
+    </div>
+    <div class="card card-hover" data-search="check in barcode face bio qr login" style="cursor:pointer" onclick="location.href='frontend/web_preview/index.html#login'">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(198,255,0,.12);border:1px solid rgba(198,255,0,.18);display:grid;place-items:center;color:var(--volt);margin-bottom:10px">▦</div>
+      <b style="font-size:13px">Tap to check in</b>
+      <div class="muted" style="margin-top:4px">Barcode · Face · Bio</div>
+      <div class="muted" style="margin-top:10px;font-size:11px;color:var(--volt);font-weight:600">Open →</div>
+    </div>
+  </div>
+
+  <div class="sec"><h3>Today goal</h3></div>
+  <div class="list-stack" id="todayStack">
+    <div class="list-card" data-search="today goal upper body push 4/6" onclick="location.href='frontend/web_preview/index.html#today'">
+      <div class="list-icon volt">🏋️</div>
+      <div class="list-main"><b>Upper Body Push</b><span>4 of 6 exercises done</span><div class="mini-bar"><i style="width:65%"></i></div></div>
+      <div class="list-right"><span class="muted" style="font-weight:700;color:var(--volt)">Open</span><span class="list-chevron">›</span></div>
+    </div>
+  </div>
+
+  <div class="sec"><h3>Weekly / monthly</h3></div>
+  <div class="list-stack" id="weeklyStack">
+    <div class="list-card" data-search="weekly monthly progress 4/5 12/20" onclick="location.href='frontend/web_preview/index.html#progress'">
+      <div class="list-icon neutral">📊</div>
+      <div class="list-main"><b>4/5 this week · 12/20 September</b><span>On track, keep pushing</span><div class="mini-bar"><i style="width:60%"></i></div></div>
+      <div class="list-right"><span class="muted" style="font-weight:700;color:var(--volt)">Details</span><span class="list-chevron">›</span></div>
+    </div>
+  </div>
+
+  <div class="sec"><h3>Trainers near you</h3></div>
+  <div class="list-stack" id="trainersStack">
+    <div class="list-card" data-search="coach rae hiit trainer" onclick="location.href='frontend/web_preview/index.html#challenges'">
+      <div class="list-icon neutral">👤</div>
+      <div class="list-main"><b>Coach Rae — HIIT</b><span>6:30 PM today · Downtown club</span></div>
+      <div class="list-right"><span style="background:rgba(198,255,0,.14);color:var(--volt);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800;border:1px solid rgba(198,255,0,.22)">Join</span></div>
+    </div>
+  </div>
+
+  <div id="emptyState" class="empty-state">No results. Try “streak”, “challenge” or “today”.</div>
+</main>
+
+<script>
+const input = document.getElementById('universalSearch');
+const clearBtn = document.getElementById('clearSearch');
+const navCenter = document.getElementById('navCenter');
+const searchToggle = document.getElementById('searchToggle');
+const searchCount = document.getElementById('searchCount');
+const emptyState = document.getElementById('emptyState');
+
+searchToggle.addEventListener('click', ()=>{
+  navCenter.classList.toggle('open');
+  if(navCenter.classList.contains('open')) input.focus();
+});
+
+function updateCount(q, visible){
+  if(!q){
+    searchCount.style.display='none';
+    emptyState.classList.remove('show');
+    return;
+  }
+  const label = visible === 1 ? '1 result' : `${visible} results`;
+  searchCount.textContent = `${label} for “${q}”`;
+  searchCount.style.display='block';
+  emptyState.classList.toggle('show', visible===0);
+}
+
+function filter(q){
+  q=(q||'').toLowerCase().trim();
+  const cards = document.querySelectorAll('[data-search]');
+  const chips = document.querySelectorAll('#chips .chip-nav');
+  let visible=0;
+  cards.forEach(c=>{
+    const hay=(c.getAttribute('data-search')+' '+c.textContent).toLowerCase();
+    const ok = !q || hay.includes(q);
+    c.classList.toggle('hidden', !ok);
+    if(ok && c.hasAttribute('data-search')) visible++;
+  });
+  // also count section stacks visibility: hide sec headers if all children hidden
+  document.querySelectorAll('.sec').forEach(sec=>{
+    // find next list-stack or card sibling
+    let next = sec.nextElementSibling;
+    // skip empty
+    while(next && next.classList.contains('sec')) break;
+  });
+  chips.forEach(ch=>{
+    const hay=(ch.getAttribute('data-k')+' '+ch.textContent).toLowerCase();
+    ch.classList.toggle('hidden', q && !hay.includes(q));
+  });
+  clearBtn.classList.toggle('show', !!q);
+  updateCount(q, visible);
+}
+input.addEventListener('input', e=> filter(e.target.value));
+clearBtn.addEventListener('click', ()=>{ input.value=''; filter(''); input.focus(); });
+document.addEventListener('keydown', e=>{
+  if(e.key==='/' && document.activeElement!==input && !e.metaKey && !e.ctrlKey){ e.preventDefault(); input.focus(); }
+  if(e.key==='Escape'){ if(input.value){ input.value=''; filter(''); } }
+});
+document.querySelectorAll('#chips .chip-nav').forEach(ch=> ch.addEventListener('click', ()=>{ input.value = ch.getAttribute('data-k'); filter(input.value); input.focus(); }));
+
+// Category filter chips: single-select toggle, clearly interactive
+const catChips = document.querySelectorAll('#categoryChips .filter-chip');
+const hint = document.getElementById('filterHint');
+catChips.forEach(c=> c.addEventListener('click', ()=>{
+  catChips.forEach(x=>{ x.classList.remove('active'); x.setAttribute('aria-pressed','false'); x.textContent = x.getAttribute('data-cat'); });
+  c.classList.add('active');
+  c.setAttribute('aria-pressed','true');
+  c.textContent = '✓ ' + c.getAttribute('data-cat');
+  hint.innerHTML = `Showing challenges for <b style="color:var(--text)">${c.getAttribute('data-cat')}</b>`;
+}));
+</script>
+</body>
+</html>
