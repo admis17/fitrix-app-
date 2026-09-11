@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 
 // ponytail: plain constants, no ThemeExtension abstraction until 2nd theme needed
 abstract class FitColors {
-  static const bg = Color(0xFF14171A);
-  static const surface = Color(0xFF1D2226);
-  static const surface2 = Color(0xFF262C31);
-  static const line = Color(0xFF333A3F);
-  static const text = Color(0xFFEDEFEE);
-  static const muted = Color(0xFF8B9298);
-  static const volt = Color(0xFFC8FF3D);
-  static const voltDim = Color(0xFF9FD028);
+  static const bg = Color(0xFF0B0D0E);
+  static const surface = Color(0xFF15191B);
+  static const surface2 = Color(0xFF1B2022);
+  static const surface3 = Color(0xFF202528);
+  static const line = Color(0x0FFFFFFF);
+  static const text = Color(0xFFF5F7F3);
+  static const text2 = Color(0xFF969C9A);
+  static const muted = Color(0xFF656B69);
+  static const volt = Color(0xFFB1E531);
+  static const voltDim = Color(0xFF7FA82A);
+  static const ember = Color(0xFFFF7A3D);
   static const heat = Color(0xFFFF5B3D);
 }
 

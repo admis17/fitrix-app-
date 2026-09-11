@@ -1,68 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FitRix — User side preview</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FitRix — Home</title>
+<!-- ponytail: zero-dependency design system. No React/bundler in this stack (single static file), so shadcn/Radix/Motion/Lucide packages can't mount here; equivalents below (tokens, stroke SVGs, CSS motion). Upgrade path: lucide-react + motion when the React port lands; lucide_icons pkg for Flutter. -->
 <style>
-:root{--bg:#14171a;--surface:#1d2226;--surface2:#262c31;--line:#333a3f;--text:#edefee;--muted:#8b9298;--volt:#c8ff3d;--heat:#ff5b3d;--r:18px}
-*{box-sizing:border-box;margin:0;padding:0}body{background:#0f1113;color:var(--text);font-family:Inter,system-ui,sans-serif;display:flex;justify-content:center;padding:24px 12px;min-height:100vh}
+:root{
+--bg:#0B0D0E;--s1:#15191B;--s2:#1B2022;--s3:#202528;
+--t1:#F5F7F3;--t2:#969C9A;--t3:#656B69;
+--lime:#B1E531;--lime-dk:#7fa82a;--ember:#ff7a3d;--danger:#ff5b5b;
+--line:rgba(255,255,255,.06);
+--surface:var(--s1);--surface2:var(--s2);--text:var(--t1);--muted:var(--t2);--volt:var(--lime);--heat:var(--ember);--r:18px;
+--m-micro:150ms;--m-std:280ms;--m-emph:450ms;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000;color:var(--t1);font-family:Inter,Manrope,system-ui,sans-serif;display:flex;justify-content:center;padding:24px 12px;min-height:100vh;-webkit-font-smoothing:antialiased}
 .device{width:390px;max-width:100%;height:840px;max-height:94vh;background:var(--bg);border-radius:40px;border:8px solid #05070a;overflow:hidden;display:flex;flex-direction:column}
-.topbar{display:flex;align-items:center;gap:10px;padding:16px 14px 10px;border-bottom:1px solid var(--line)}
-.brand{font-weight:900;font-size:19px;white-space:nowrap}.brand span{color:var(--volt)}
-.search{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)}
-.iconbtn{background:var(--surface);border:1px solid var(--line);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
-.screen{flex:1;overflow-y:auto;padding:14px 16px 10px;scrollbar-width:none}.screen::-webkit-scrollbar{display:none}
-.view{display:none}.view.active{display:block;animation:f .3s ease}@keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
-h2{font-weight:900;letter-spacing:-.5px}
-.sec{display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px}.sec h3{font-size:11px;letter-spacing:.8px;color:var(--muted);text-transform:uppercase}.sec a{font-size:12px;color:var(--volt);font-weight:600;cursor:pointer;text-decoration:none}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:9px 12px;font-size:12px;cursor:pointer}.chip b{color:var(--volt)}
-.row2{display:flex;gap:12px}.row2>.card{flex:1}
-.bar{height:8px;background:var(--surface2);border-radius:6px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#9fd028,var(--volt))}
-.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.grid i{aspect-ratio:1;border-radius:6px;background:var(--volt);opacity:.85}.grid i.off{background:var(--surface2);opacity:1}
-.btn{background:var(--volt);color:#0f1113;border:none;border-radius:12px;padding:12px;font-weight:800;width:100%;cursor:pointer;margin-top:8px}
-.tag{font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;background:rgba(200,255,61,.12);color:var(--volt)}.tag.full{background:rgba(255,91,61,.12);color:var(--heat)}
+/* header */
+.topbar{display:flex;align-items:center;gap:10px;min-height:60px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.brand{font-weight:900;font-size:19px;letter-spacing:.4px}.brand span{color:var(--lime)}
+.spacer{flex:1}
+.avatar{position:relative;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--lime),#5c7a1c);display:flex;align-items:center;justify-content:center;color:#0f1113;font-weight:800;font-size:12px;cursor:pointer;border:none}
+.avatar .dot{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:var(--s3);border:2px solid var(--bg)}
+.avatar.in .dot{background:var(--lime)}
+/* screen */
+.screen{flex:1;overflow-y:auto;padding:16px 16px 24px;scrollbar-width:none}.screen::-webkit-scrollbar{display:none}
+.view{display:none}.view.active{display:block}
+/* motion system: fast, athletic. Entrance runs when view first paints. */
+.rise{opacity:0;animation:up var(--m-std) ease forwards;animation-delay:var(--d,0s)}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.press{transition:transform var(--m-micro) ease}.press:active{transform:scale(.97)}
+.flame{transform-origin:50% 90%;animation:flamePop var(--m-emph) ease .1s both}
+@keyframes flamePop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+/* type */
+h2{font-weight:800;letter-spacing:-.5px}
+.greet h2{font-size:22px}.greet p{font-size:13px;color:var(--t2);margin-top:3px}
+/* FITRIXSectionHeader: editorial kicker + action */
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:24px 0 10px}
+.sec h3{font-size:11px;letter-spacing:1px;color:var(--t2);text-transform:uppercase;font-weight:700}
+.sec a{font-size:12.5px;color:var(--lime);font-weight:600;cursor:pointer;text-decoration:none}
+/* FITRIXCard levels: flat(s1) / elevated(s2) / hero / quiet */
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--line);border-left:3px solid var(--lime)}
+.hero::before{content:"";position:absolute;left:-60px;top:-80px;width:220px;height:220px;background:radial-gradient(circle,rgba(177,229,49,.10),transparent 70%);pointer-events:none}
+.hero .k{font-size:11px;letter-spacing:1px;color:var(--lime);font-weight:700;position:relative}
+.hero h3{font-size:20px;font-weight:800;margin:6px 0 2px;position:relative}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--lime);color:#0f1113;border:none;border-radius:12px;min-height:48px;padding:12px;font-weight:800;font-size:14px;width:100%;cursor:pointer;margin-top:14px;font-family:inherit;transition:transform var(--m-micro) ease}
+.cta:active{transform:scale(.98)}
+.cta svg{width:18px;height:18px}
+/* FITRIXProgress */
+.fp{height:8px;background:var(--s3);border-radius:6px;overflow:hidden;margin-top:10px}
+.fp i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lime-dk),var(--lime));border-radius:6px;transition:width .7s ease}
+.fp.big{height:10px}
+.bar{height:8px;background:var(--s3);border-radius:6px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lime-dk),var(--lime));border-radius:6px;transition:width .7s ease}
+/* streak + check-in */
+.row2{display:flex;gap:12px}.row2>*{flex:1;min-width:0}
+.streak{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:16px 14px;cursor:pointer;margin-bottom:0}
+.streak .bignum{font-size:32px;font-weight:800;line-height:1}
+.streak .lbl{font-size:10.5px;letter-spacing:1px;color:var(--t2);margin-top:4px;font-weight:700}
+.streak .sub{font-size:11px;color:var(--t3);margin-top:6px}
+.checkin{cursor:pointer;text-align:left;background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:16px 14px;color:var(--t1);font-family:inherit;transition:transform var(--m-micro) ease,border-color var(--m-std) ease}
+.checkin:active{transform:scale(.97)}
+.checkin.ready{border-color:rgba(177,229,49,.45)}
+.checkin.done{border-color:rgba(177,229,49,.25)}
+.checkin .t{font-size:13px;font-weight:800;margin-top:8px}
+.checkin .s{font-size:11px;color:var(--t2);margin-top:2px}
+.ckring{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--t3)}
+.checkin.done .ckring{background:var(--lime);border-color:var(--lime);color:#0f1113}
+/* media challenge card */
+.media{background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:12px;cursor:pointer;margin-bottom:12px}
+.media .frame{position:relative;aspect-ratio:16/9;background:radial-gradient(circle at 50% 30%,#232a2d,var(--s2) 75%);border-radius:12px;overflow:hidden}
+.playbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:var(--lime);color:#0f1113;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;transition:transform var(--m-micro) ease}
+.media:active .playbtn{transform:translate(-50%,-50%) scale(.9)}
+.media .meta{padding:12px 4px 4px}.media .meta b{font-size:16px;font-weight:800}
+.media .meta .row{display:flex;justify-content:space-between;align-items:center;margin-top:3px}
+/* quiet editorial stats (not cards) */
+.stats{display:flex;margin:4px 0 0}
+.stat{flex:1;min-width:0;padding:2px 14px 2px 0}
+.stat+.stat{border-left:1px solid var(--line);padding-left:14px}
+.stat .n{font-size:22px;font-weight:800;display:flex;align-items:center;gap:6px}
+.stat .n svg{width:15px;height:15px;color:var(--lime)}
+.stat .l{font-size:10px;letter-spacing:1px;color:var(--t2);margin-top:4px;font-weight:700}
+/* up-next schedule row */
+.upnext{display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;cursor:pointer}
+.upnext .when{min-width:52px;text-align:center;background:var(--s3);border-radius:10px;padding:7px 0}
+.upnext .when b{display:block;font-size:15px}.upnext .when span{font-size:9.5px;letter-spacing:.8px;color:var(--t2);font-weight:700}
+.joinpill{font-size:12px;font-weight:700;padding:8px 14px;border-radius:20px;background:rgba(177,229,49,.12);color:var(--lime);white-space:nowrap;border:none;cursor:pointer;font-family:inherit}
+/* legacy views */
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:9px 12px;font-size:12px;cursor:pointer;color:var(--t1)}.chip b{color:var(--lime)}
+.btn{background:var(--lime);color:#0f1113;border:none;border-radius:12px;padding:12px;font-weight:800;width:100%;cursor:pointer;margin-top:8px;font-family:inherit}
+.tag{font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;background:rgba(177,229,49,.12);color:var(--lime);white-space:nowrap}.tag.full{background:rgba(255,91,61,.12);color:var(--danger)}
 .list{display:flex;align-items:center;gap:10px}.list+.list{margin-top:10px}
-.navbar{display:flex;justify-content:space-around;padding:10px 6px 16px;border-top:1px solid var(--line);background:rgba(20,23,26,.95)}.navbar button{background:none;border:none;color:var(--muted);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}.navbar button.active{color:var(--volt)}.navbar span{font-size:18px}
-.video{height:140px;background:var(--surface2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:10px}
-.muted{color:var(--muted);font-size:12px}
+.video{aspect-ratio:16/9;background:var(--s3);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:10px}
+.muted{color:var(--t2);font-size:12px}
+/* premium bottom nav */
+.navbar{display:flex;min-height:68px;padding:8px 8px max(14px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--s1)}
+.navbar button{flex:1;background:none;border:none;color:var(--t3);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;min-height:52px;font-family:inherit;transition:color var(--m-micro) ease}
+.navbar button svg{width:22px;height:22px}
+.navbar button .ic{display:flex;align-items:center;justify-content:center;width:44px;height:28px;border-radius:14px;transition:background var(--m-micro) ease}
+.navbar button.active{color:var(--lime)}
+.navbar button.active .ic{background:rgba(177,229,49,.14)}
+.ic svg{width:22px;height:22px}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* STREAKS: staged entrance (~850ms total), idle flame, consistency grid, sheet */
+.device{position:relative}
+.sk-hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;margin-top:12px}
+.sk-hero::before{content:"";position:absolute;left:50%;top:-90px;transform:translateX(-50%);width:260px;height:200px;background:radial-gradient(ellipse,rgba(255,122,61,.12),transparent 70%);pointer-events:none}
+.sk-k{font-size:11px;letter-spacing:1.5px;color:var(--t2);font-weight:700}
+.sk-flame{width:54px;height:54px;color:var(--ember);margin:10px auto 2px;transform-origin:50% 90%;animation:flameIdle 2.2s ease-in-out .5s infinite}
+@keyframes flameIdle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.05) rotate(1.2deg)}}
+.sk-num{font-size:56px;font-weight:800;line-height:1.05;letter-spacing:-1px}
+.sk-lbl{font-size:11px;letter-spacing:2px;color:var(--t2);font-weight:700;margin-top:2px}
+.sk-best{font-size:12px;color:var(--t2);margin-top:10px}
+.sk-rew{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);text-align:left}
+.sk-rew .t{font-size:11px;letter-spacing:1px;color:var(--lime);font-weight:700}
+.sk-rew .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px}
+.sk-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;max-width:252px;margin:0 auto}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;max-width:252px;margin:0 auto 8px}
+.dow span{font-size:10.5px;color:var(--t3);font-weight:600;text-align:center}
+.sk-sum{font-size:11px;color:var(--t2);margin-top:10px;text-align:center}
+.cell.today.done::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--s1)}
+.cell.future{background:var(--s1)}
+.cell.hot{animation:cellIn .2s ease both,streakBuild .4s ease 1.05s both;animation-delay:calc(.3s + var(--i)*20ms),1.05s}
+@keyframes streakBuild{from{filter:brightness(.7)}to{filter:brightness(1)}}
+/* ponytail: 7-col grid caps cells below 44px on narrow phones; full-size day buttons when detail view lands */
+.cell{aspect-ratio:1;border-radius:9px;border:1px solid var(--line);background:var(--s3);cursor:pointer;padding:0;min-width:0;opacity:0;animation:cellIn .2s ease forwards;animation-delay:calc(.3s + var(--i)*20ms);font-family:inherit;transition:transform var(--m-micro) ease}
+@keyframes cellIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.cell:active{transform:scale(.9)}
+.cell.done{background:var(--lime);border-color:var(--lime)}
+.cell.today{border-color:var(--lime);position:relative}
+.cell.today::after{content:"";position:absolute;right:4px;top:4px;width:6px;height:6px;border-radius:50%;background:var(--lime);animation:todayPulse 2s ease-in-out infinite}
+@keyframes todayPulse{0%,100%{opacity:.5}50%{opacity:1}}
+.sk-leg{display:flex;gap:14px;margin-top:12px;font-size:11px;color:var(--t2)}
+.sk-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px}
+.reward{display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;width:100%;color:var(--t1);font-family:inherit;text-align:left;font-size:14px}
+.reward.claimed{cursor:default}
+.gift{width:44px;height:44px;border-radius:12px;background:rgba(177,229,49,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gift svg{width:22px;height:22px}
+.claimbtn{margin-left:auto;font-size:12.5px;font-weight:800;padding:10px 18px;min-height:44px;border-radius:22px;border:none;background:var(--lime);color:#0f1113;cursor:pointer;font-family:inherit;flex-shrink:0}
+.claimbtn:disabled{background:var(--s3);color:var(--t2);cursor:default}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity var(--m-std) ease;z-index:40}
+.sheet-bg.open{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--s2);border-top:1px solid var(--line);border-radius:20px 20px 0 0;padding:10px 20px max(20px,env(safe-area-inset-bottom));transform:translateY(105%);transition:transform var(--m-std) ease;z-index:41}
+.sheet.open{transform:none}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--s3);margin:2px auto 14px}
+.sh-k{font-size:11px;letter-spacing:1px;color:var(--t2);font-weight:700}
+.sh-t{font-size:18px;font-weight:800;margin-top:4px}
+.sh-s{font-size:12.5px;color:var(--t2);margin-top:4px}
+.ghost{width:100%;background:none;border:1px solid var(--line);color:var(--t1);border-radius:12px;min-height:44px;margin-top:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px}
+.view.active .stage{opacity:0;animation:up var(--m-std) ease forwards;animation-delay:var(--s,0s)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rise,.stage,.cell{opacity:1}.fp i,.bar i{transition:none}}
 </style>
 </head>
 <body>
 <div class="device">
-<div class="topbar"><div class="brand">FIT<span>RIX</span></div><input class="search" placeholder="Search (trial — remove if team dislikes)"><div class="iconbtn" onclick="show('wallet')" title="Wallet">◈</div><div class="iconbtn" onclick="show('profile')" title="Profile">☺</div></div>
+<div class="topbar"><div class="brand">FIT<span>RIX</span></div><div class="spacer"></div><button class="avatar" id="avatar" onclick="show('profile')" aria-label="Profile"><span>A</span><span class="dot"></span></button></div>
 <div class="screen">
 <!-- HOME -->
-<div class="view active" id="v-home"><h2>Home</h2><div class="muted">Adarsh · lists all pages</div>
-<div class="sec"><h3>Pages</h3></div><div class="chips"><span class="chip" onclick="show('challenges')"><b>◉</b> Challenges</span><span class="chip" onclick="show('streaks')"><b>🔥</b> Streaks</span><span class="chip" onclick="show('today')"><b>◉</b> Today goal</span><span class="chip" onclick="show('progress')"><b>◉</b> Progress</span><span class="chip" onclick="show('wallet')"><b>◉</b> Wallet</span><span class="chip" onclick="show('profile')"><b>◉</b> Profile</span><span class="chip" onclick="show('login')"><b>◉</b> Login setup</span></div>
-<div class="sec"><h3>Featured challenge video</h3></div><div class="card"><div class="video">▶</div><b>September Sweat Challenge</b><div class="muted">Log 20 workouts → merch + 500 pts. Category: Strength (picked at signup, filters challenges).</div></div>
-<div class="sec"><h3>Streak & check-in</h3></div><div class="row2"><div class="card" onclick="show('streaks')" style="cursor:pointer"><div style="font-size:24px;font-weight:900;color:var(--heat)">12</div><div class="muted">Day streak 🔥</div></div><div class="card" onclick="show('login')" style="cursor:pointer"><div style="font-size:22px">▦</div><b style="font-size:13px">Tap to check in</b><div class="muted">Barcode · Face · Bio</div></div></div>
-<div class="sec"><h3>Today goal</h3><a onclick="show('today')">Open</a></div><div class="card"><div class="list" style="justify-content:space-between"><b>Upper Body Push</b><span class="muted">4/6 done</span></div><div class="bar"><i style="width:65%"></i></div></div>
-<div class="sec"><h3>Weekly / monthly</h3><a onclick="show('progress')">Details</a></div><div class="card">4/5 this week · 12/20 September<div class="bar"><i style="width:60%"></i></div><div class="muted" style="margin-top:6px">Remark: on track, keep pushing 💪</div></div></div>
+<div class="view active" id="v-home">
+<div class="greet rise" style="--d:.02s"><h2 id="greetTitle">Good evening, Adarsh</h2><p>Ready to keep your streak alive?</p></div>
+<div class="card hero rise" style="--d:.06s;margin-top:16px">
+<div class="k">TODAY'S WORKOUT</div><h3>Upper Body Push</h3>
+<div class="muted">4 / 6 exercises completed · 67%</div>
+<div class="fp big"><i data-w="67"></i></div>
+<button class="cta" onclick="show('today')">Continue workout <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+<div class="row2 rise" style="--d:.1s;margin-top:16px">
+<div class="streak press" onclick="show('streaks')">
+<svg class="i flame" viewBox="0 0 24 24" style="width:26px;height:26px;color:var(--ember)"><path d="M12 22c4.4 0 7.5-3 7.5-7.2 0-3.1-1.9-5.3-3.6-7C14.4 6.2 13 4.5 13 2c-3 2-4.5 4.3-5.3 6.5-.4-1-.6-2-.7-3.2C5.4 6.9 4.5 9.3 4.5 12 4.5 17 7.6 22 12 22z"/><path d="M12 22c-1.8 0-3-1.3-3-3 0-1.2.8-2.2 1.6-3 .7-.6 1.4-1.4 1.4-2.5 1.5 1 3 2.6 3 4.5 0 1.7-1.2 3-3 3z"/></svg>
+<div class="bignum">12</div><div class="lbl">DAY STREAK</div><div class="sub">12-day consistency · best 21</div>
+</div>
+<button class="checkin ready" id="checkinBtn" onclick="toggleCheckin()"><span class="ckring" id="checkinRing">→</span><div class="t" id="checkinT">CHECK IN</div><div class="s" id="checkinS">Tap to check in</div></button>
+</div>
+<div class="sec rise" style="--d:.14s"><h3>Featured challenge</h3><a onclick="show('challenges')">View →</a></div>
+<div class="media press rise" style="--d:.16s" onclick="show('challenges')">
+<div class="frame"><span class="playbtn"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#0f1113"><path d="M8 5v14l11-7z"/></svg></span></div>
+<div class="meta"><b>September Sweat Challenge</b><div class="row"><span class="muted">20 workouts · 500 pts</span><a style="font-size:12.5px;color:var(--lime);font-weight:600">Enter →</a></div></div>
+</div>
+<div class="sec rise" style="--d:.2s"><h3>Your progress</h3><a onclick="show('progress')">Details</a></div>
+<div class="card rise" style="--d:.22s;background:var(--s1)">
+<div class="list" style="justify-content:space-between"><b>4 / 5</b><span class="muted" style="font-size:11px;letter-spacing:.8px">WORKOUTS THIS WEEK</span></div>
+<div class="fp"><i data-w="80"></i></div>
+<div class="muted" style="margin-top:8px">1 workout remaining</div>
+</div>
+<div class="card rise" style="--d:.24s;background:var(--s1)">
+<div class="list" style="justify-content:space-between"><b>September · 12 / 20</b><span class="muted">60%</span></div>
+<div class="fp"><i data-w="60"></i></div>
+</div>
+<div class="sec rise" style="--d:.26s"><h3>Quick stats</h3></div>
+<div class="stats rise" style="--d:.28s">
+<div class="stat"><div class="n"><svg class="i" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>4</div><div class="l">Workouts · week</div></div>
+<div class="stat"><div class="n"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg>2,140</div><div class="l">Points</div></div>
+</div>
+<div class="sec rise" style="--d:.3s"><h3>Up next</h3><a onclick="show('challenges')">All →</a></div>
+<div class="upnext press rise" style="--d:.32s" onclick="show('challenges')">
+<div class="when"><b>6:30</b><span>PM</span></div>
+<div style="flex:1;min-width:0"><b style="font-size:14.5px">HIIT Circuit</b><div class="muted">Today · Coach Rae</div></div>
+<button class="joinpill">Join →</button>
+</div>
+<div style="height:8px"></div>
+</div>
 <!-- CHALLENGES -->
 <div class="view" id="v-challenges"><h2>Challenges</h2><div class="muted">Bhushan · same navbar</div>
 <div class="sec"><h3>Today challenges</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span><b>HIIT Circuit</b><br><span class="muted">6:30 PM · Coach Rae</span></span><span class="tag">Join</span></div></div><div class="card"><div class="list" style="justify-content:space-between"><span><b>Power Yoga</b><br><span class="muted">7:15 PM · Coach Tom</span></span><span class="tag full">Full</span></div></div>
 <div class="sec"><h3>Challenger video / photo</h3></div><div class="card"><div class="video">▶</div><div class="muted">Challenger intro plays here</div></div>
-<div class="sec"><h3>Leaderboard</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span>Sara K.</span><span class="muted">14 attempts · <b style="color:var(--volt)">980</b></span></div><div class="list" style="justify-content:space-between"><span>Diego M.</span><span class="muted">12 attempts · <b style="color:var(--volt)">920</b></span></div><div class="list" style="justify-content:space-between"><span>Jordan (you)</span><span class="muted">10 attempts · <b style="color:var(--volt)">840</b></span></div></div>
-<div class="sec"><h3>Prize pool</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span>Set by gym / participants</span><b style="color:var(--volt)">₹5,000</b></div></div>
+<div class="sec"><h3>Leaderboard</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span>Sara K.</span><span class="muted">14 attempts · <b style="color:var(--lime)">980</b></span></div><div class="list" style="justify-content:space-between"><span>Diego M.</span><span class="muted">12 attempts · <b style="color:var(--lime)">920</b></span></div><div class="list" style="justify-content:space-between"><span>Jordan (you)</span><span class="muted">10 attempts · <b style="color:var(--lime)">840</b></span></div></div>
+<div class="sec"><h3>Prize pool</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span>Set by gym / participants</span><b style="color:var(--lime)">₹5,000</b></div></div>
 <div class="chips"><span class="chip">＋ Add challenge</span><span class="chip" onclick="show('login')">✓ Participate</span><span class="chip">◷ History</span><span class="chip">₹ Add prize</span></div></div>
 <!-- STREAKS -->
-<div class="view" id="v-streaks"><h2>Streaks</h2><div class="muted">Vedant · see ref for ideas</div><div class="card" style="text-align:center;margin-top:12px"><div style="font-size:40px">🔥</div><h2>12 day streak</h2><div class="muted">Best 21 · rewards at 15</div><div class="bar"><i style="width:80%"></i></div></div>
-<div class="sec"><h3>Attendance grid</h3></div><div class="card"><div class="grid"><i></i><i></i><i></i><i></i><i class="off"></i><i></i><i></i><i></i><i></i><i class="off"></i><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i></i><i></i><i></i><i></i><i></i></div></div>
-<div class="sec"><h3>Rewards → wallet</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span>500 pts = merch drop</span><a onclick="show('wallet')">Claim ›</a></div></div></div>
+<div class="view" id="v-streaks">
+<h2 class="stage">Streaks</h2>
+<div class="sk-hero stage" style="--s:.05s">
+<div class="sk-k">STREAK</div>
+<svg class="sk-flame" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M12 22c4.4 0 7.5-3 7.5-7.2 0-3.1-1.9-5.3-3.6-7C14.4 6.2 13 4.5 13 2c-3 2-4.5 4.3-5.3 6.5-.4-1-.6-2-.7-3.2C5.4 6.9 4.5 9.3 4.5 12 4.5 17 7.6 22 12 22z"/><path d="M12 22c-1.8 0-3-1.3-3-3 0-1.2.8-2.2 1.6-3 .7-.6 1.4-1.4 1.4-2.5 1.5 1 3 2.6 3 4.5 0 1.7-1.2 3-3 3z"/></svg>
+<div class="sk-num" id="skNum">0</div>
+<div class="sk-lbl">DAY STREAK</div>
+<div class="sk-best" id="skBest">Best · 21 days</div>
+<div class="sk-rew"><div class="t">NEXT REWARD · 15 DAYS</div>
+<div class="row"><b id="skToGo">3 days to go · 12/15</b><span class="muted" id="skPct">80%</span></div>
+<div class="fp big"><i id="skBar" data-w="80"></i></div></div>
+</div>
+<div class="sec stage" style="--s:.4s"><h3>Your consistency</h3><span class="muted">Last 28 days</span></div>
+<div class="card stage" style="--s:.45s"><div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="sk-grid" id="skGrid"></div>
+<div class="sk-sum" id="skSum"></div>
+<div class="sk-leg"><span><i style="background:var(--lime)"></i>Done</span><span><i style="background:var(--s3);border:1px solid var(--line)"></i>Missed</span><span><i style="border:1.5px solid var(--lime);background:none"></i>Today</span></div></div>
+<div class="sec stage" style="--s:.5s"><h3>Next reward</h3></div>
+<div class="reward stage press" style="--s:.55s" id="rewardCard" onclick="claimReward()">
+<div class="gift"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9M12 8v13M12 8s-4 0-5.5-1.5C5 5 6 3.5 7.5 3.5 9.5 3.5 12 8 12 8zm0 0s4 0 5.5-1.5c1.5-1.5.5-3-1-3C14.5 3.5 12 8 12 8z"/></svg></div>
+<div style="flex:1;min-width:0"><b id="rwPts">500 POINTS</b><div class="muted">Merch drop · <span id="rwHave"></span></div></div>
+<button class="claimbtn" id="claimBtn">Claim →</button>
+</div>
+</div>
 <!-- TODAY -->
-<div class="view" id="v-today"><h2>Today goal</h2><div class="muted">Vedant · v1, redesign after</div><div class="card" style="margin-top:12px">2/4 done<div class="bar"><i style="width:50%"></i></div></div><div class="card">✓ Barbell bench press <span class="muted">4×8 · 72.5kg</span></div><div class="card">✓ Incline DB press <span class="muted">3×10 · 26kg</span></div><div class="card">○ Cable fly <span class="muted">3×12 · 18kg</span></div><div class="card">○ Lateral raise <span class="muted">3×15 · 8kg</span></div></div>
+<div class="view" id="v-today"><h2>Today goal</h2><div class="muted">Vedant · v1, redesign after</div><div class="card" style="margin-top:12px">2/4 done<div class="bar"><i data-w="50"></i></div></div><div class="card">✓ Barbell bench press <span class="muted">4×8 · 72.5kg</span></div><div class="card">✓ Incline DB press <span class="muted">3×10 · 26kg</span></div><div class="card">○ Cable fly <span class="muted">3×12 · 18kg</span></div><div class="card">○ Lateral raise <span class="muted">3×15 · 8kg</span></div></div>
 <!-- PROGRESS -->
-<div class="view" id="v-progress"><h2>Progress</h2><div class="muted">Renamed Today-goal pattern</div><div class="card" style="margin-top:12px"><b>Weekly</b> 4/5<div class="bar"><i style="width:80%"></i></div><div class="muted">On track 💪</div></div><div class="card"><b>Monthly</b> 12/20<div class="bar"><i style="width:60%"></i></div><div class="muted">Push 2 more</div></div><div class="card"><b>Weight</b> 2.6/4kg<div class="bar"><i style="width:65%"></i></div><div class="muted">Steady</div></div></div>
+<div class="view" id="v-progress"><h2>Progress</h2><div class="muted">Renamed Today-goal pattern</div><div class="card" style="margin-top:12px"><b>Weekly</b> 4/5<div class="bar"><i data-w="80"></i></div><div class="muted">On track 💪</div></div><div class="card"><b>Monthly</b> 12/20<div class="bar"><i data-w="60"></i></div><div class="muted">Push 2 more</div></div><div class="card"><b>Weight</b> 2.6/4kg<div class="bar"><i data-w="65"></i></div><div class="muted">Steady</div></div></div>
 <!-- WALLET -->
-<div class="view" id="v-wallet"><h2>Wallet</h2><div class="muted">In navbar · team design coming</div><div class="card" style="margin-top:12px"><div class="muted" style="color:var(--volt);font-weight:700">TOTAL</div><h2 style="font-size:28px">2,140 pts</h2><div class="muted">≈ ₹214 rewards</div></div><div class="card">Sweat bonus <b style="color:var(--volt)">+500</b></div><div class="card">Streak <b style="color:var(--volt)">+120</b></div><div class="card">Merch <b style="color:var(--volt)">−800</b></div></div>
+<div class="view" id="v-wallet"><h2>Wallet</h2><div class="muted">In navbar · team design coming</div><div class="card" style="margin-top:12px"><div class="muted" style="color:var(--lime);font-weight:700">TOTAL</div><h2 style="font-size:28px">2,140 pts</h2><div class="muted">≈ ₹214 rewards</div></div><div class="card">Sweat bonus <b style="color:var(--lime)">+500</b></div><div class="card">Streak <b style="color:var(--lime)">+120</b></div><div class="card">Merch <b style="color:var(--lime)">−800</b></div></div>
 <!-- PROFILE -->
 <div class="view" id="v-profile"><h2>Profile</h2><div class="muted">In navbar · same pattern</div><div class="card" style="text-align:center;margin-top:12px"><div style="font-size:22px;font-weight:900">JM</div><b>Jordan Miles</b><div class="muted">Since Apr 2024</div></div><div class="card">Status: Active<br>Renews: Oct 14, 2026<br>Home: Downtown</div><div class="card" onclick="show('login')" style="cursor:pointer">Check-in setup ›</div></div>
 <!-- LOGIN -->
 <div class="view" id="v-login"><h2>Login setup</h2><div class="muted">Adarsh · barcode / face / bio</div><div class="card" style="text-align:center;margin-top:12px"><div style="font-size:64px">▦</div><b>Scan at entry</b><div class="muted">Refreshes 45s</div></div><div class="row2"><div class="card" style="text-align:center">◉<br>Face</div><div class="card" style="text-align:center">◎<br>Biometric</div></div><div class="card">Category: Strength · Cardio · Yoga · Boxing<br><span class="muted">Picked at signup → filters challenges</span></div><button class="btn" onclick="show('home')">Save & continue</button></div>
 </div>
-<div class="navbar"><button class="active" data-v="home" onclick="show('home')"><span>⌂</span>Home</button><button data-v="challenges" onclick="show('challenges')"><span>🏆</span>Challenges</button><button data-v="streaks" onclick="show('streaks')"><span>🔥</span>Streaks</button><button data-v="wallet" onclick="show('wallet')"><span>◈</span>Wallet</button><button data-v="profile" onclick="show('profile')"><span>☺</span>Profile</button></div>
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Day details">
+<div class="grab"></div>
+<div class="sh-k" id="shK">DAY</div>
+<div class="sh-t" id="shT">—</div>
+<div class="sh-s" id="shS">—</div>
+<button class="cta" id="shBtn" style="display:none">Open today's workout →</button>
+<button class="ghost" onclick="closeSheet()">Close</button>
 </div>
-<script>function show(n){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('v-'+n).classList.add('active');document.querySelectorAll('.navbar button').forEach(b=>b.classList.toggle('active',b.dataset.v===n));document.querySelector('.screen').scrollTop=0}</script>
+<div class="navbar">
+<button class="active" data-v="home" onclick="show('home')"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg></span>Home</button>
+<button data-v="challenges" onclick="show('challenges')"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a1 1 0 0 0-1 1c0 2.5 2 4 4 4M17 6h3a1 1 0 0 1 1 1c0 2.5-2 4-4 4"/></svg></span>Challenges</button>
+<button data-v="streaks" onclick="show('streaks')"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 22c4.4 0 7.5-3 7.5-7.2 0-3.1-1.9-5.3-3.6-7C14.4 6.2 13 4.5 13 2c-3 2-4.5 4.3-5.3 6.5-.4-1-.6-2-.7-3.2C5.4 6.9 4.5 9.3 4.5 12 4.5 17 7.6 22 12 22z"/></svg></span>Streaks</button>
+<button data-v="wallet" onclick="show('wallet')"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2"/><path d="M3 7v10a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14" r="1.2"/></svg></span>Wallet</button>
+<button data-v="profile" onclick="show('profile')"><span class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg></span>Profile</button>
+</div>
+</div>
+<script>
+// ponytail: localStorage for check-in only; real attendance state moves to backend later
+var checkedIn = localStorage.getItem('fitrix_checkin') !== '0';
+function greet(){var h=new Date().getHours();return h<12?'Good morning':h<17?'Good afternoon':'Good evening'}
+document.getElementById('greetTitle').textContent=greet()+', Adarsh';
+function paintCheckin(){var b=document.getElementById('checkinBtn');document.getElementById('checkinRing').textContent=checkedIn?'✓':'→';document.getElementById('checkinT').textContent=checkedIn?'CHECKED IN':'CHECK IN';document.getElementById('checkinS').textContent=checkedIn?'Nice work today':'Tap to check in';b.classList.toggle('done',checkedIn);b.classList.toggle('ready',!checkedIn);document.getElementById('avatar').classList.toggle('in',checkedIn)}
+function toggleCheckin(){checkedIn=!checkedIn;localStorage.setItem('fitrix_checkin',checkedIn?'1':'0');paintCheckin();if(checkedIn)show('today')}
+function animateBars(root){root.querySelectorAll('.fp i,.bar i').forEach(function(b){b.style.width='0';requestAnimationFrame(function(){requestAnimationFrame(function(){b.style.width=b.getAttribute('data-w')+'%'})})})}
+function show(n){document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});var el=document.getElementById('v-'+n);el.classList.add('active');document.querySelectorAll('.navbar button').forEach(function(b){b.classList.toggle('active',b.dataset.v===n)});document.querySelector('.screen').scrollTop=0;if(n==='streaks')skIntro();animateBars(el)}
+// ponytail: one app-state object; static mock today, backend binds the same keys later
+var S={streak:12,best:21,rewardAt:15,points:2140,rewardCost:500};
+var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],FM=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function fmt(d){return DOW[d.getDay()]+', '+MON[d.getMonth()]+' '+d.getDate()}
+function countUp(el,to,ms){if(reduced){el.textContent=to;return}var t0=null;function f(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e);if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+function skIntro(){document.getElementById('skBest').textContent='Best · '+S.best+' days';var left=S.rewardAt-S.streak,pct=Math.min(100,Math.round(S.streak/S.rewardAt*100));document.getElementById('skToGo').textContent=left+' days to go · '+S.streak+'/'+S.rewardAt;document.getElementById('skPct').textContent=pct+'%';document.getElementById('skBar').setAttribute('data-w',pct);countUp(document.getElementById('skNum'),S.streak,650);buildGrid();paintReward()}
+function buildGrid(){var g=document.getElementById('skGrid');g.innerHTML='';var t=new Date();t.setHours(0,0,0,0);var mIdx=(t.getDay()+6)%7;var start=new Date(t);start.setDate(t.getDate()-mIdx-21);var btns=[],dn=0,n=0;for(var i=0;i<28;i++){var d=new Date(start);d.setDate(start.getDate()+i);var cls='cell',st,done=false;if(d.getTime()>t.getTime()){cls+=' future';st='upcoming'}else if(d.getTime()===t.getTime()){done=checkedIn;cls+=done?' done today':' today';st=done?'completed':'today'}else{done=((d.getDate()+d.getMonth())%9!==0);n++;if(done){cls+=' done';dn++}st=done?'completed':'missed'}var b=document.createElement('button');b.className=cls;b.style.setProperty('--i',i);b.setAttribute('aria-label',FM[d.getMonth()]+' '+d.getDate()+' — '+st);(function(dd,ss,dn2){b.onclick=function(){openSheet(dd,ss,dn2)}})(d,st,done);g.appendChild(b);btns.push({el:b,st:st})}var hot=btns.filter(function(x){return x.st==='completed'||x.st==='today'}).slice(-12);hot.forEach(function(x){x.el.classList.add('hot')});var pc=n?Math.round(dn/n*100):0;document.getElementById('skSum').textContent=dn+' / '+n+' days active · '+pc+'% consistency'}
+function openSheet(d,st,done){document.getElementById('shK').textContent=fmt(d).toUpperCase();var t=document.getElementById('shT'),s=document.getElementById('shS'),btn=document.getElementById('shBtn');btn.style.display='none';if(st==='upcoming'){t.textContent='Upcoming';s.textContent='Scheduled · shows here when the day arrives.'}else if(st==='completed'){t.textContent='Workout completed';s.textContent='Logged · counts toward your streak'}else if(st==='today'){t.textContent=done?'Checked in today':'Today — not yet logged';s.textContent=done?'Nice work. See you tomorrow.':'Your workout is waiting.';if(!done)btn.style.display='block'}else{t.textContent='No workout logged';s.textContent='Rest happens. Keep the streak alive tomorrow.'}document.getElementById('sheetBg').classList.add('open');document.getElementById('sheet').classList.add('open')}
+function closeSheet(){document.getElementById('sheetBg').classList.remove('open');document.getElementById('sheet').classList.remove('open')}
+function paintReward(){var c=localStorage.getItem('fitrix_claim')==='1';document.getElementById('rwPts').textContent=S.rewardCost+' POINTS';document.getElementById('rwHave').textContent='You have '+S.points.toLocaleString()+' pts';var btn=document.getElementById('claimBtn');btn.disabled=c;btn.textContent=c?'CLAIMED ✓':'Claim →';document.getElementById('rewardCard').classList.toggle('claimed',c)}
+function claimReward(){if(localStorage.getItem('fitrix_claim')==='1')return;localStorage.setItem('fitrix_claim','1');paintReward()}
+document.getElementById('shBtn').onclick=function(){closeSheet();show('today')};
+paintCheckin();paintReward();animateBars(document.getElementById('v-home'));
+</script>
 </body>
 </html>

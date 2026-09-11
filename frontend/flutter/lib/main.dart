@@ -37,8 +37,6 @@ class _RootNavState extends State<RootNav> {
       HomeScreen(
         onOpenChallenges: () => _go(1),
         onOpenStreaks: () => _go(2),
-        onOpenWallet: () => _go(3),
-        onOpenProfile: () => _go(4),
         onOpenToday: () => _open(const SubPage(child: TodayGoalScreen())),
         onOpenProgress: () => _open(const SubPage(child: ProgressScreen())),
         onOpenLogin: () => _open(const SubPage(child: LoginSetupScreen())),
@@ -53,7 +51,6 @@ class _RootNavState extends State<RootNav> {
         preferredSize: const Size.fromHeight(64),
         child: SafeArea(
           child: FitTopBar(
-            onWallet: () => _go(3),
             onProfile: () => _go(4),
           ),
         ),
@@ -107,14 +104,13 @@ class SubPage extends StatelessWidget {
 // ---------- shared ----------
 
 class FitTopBar extends StatelessWidget {
-  final VoidCallback onWallet;
   final VoidCallback onProfile;
-  const FitTopBar({required this.onWallet, required this.onProfile, super.key});
+  const FitTopBar({required this.onProfile, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       color: FitColors.bg,
       child: Row(
         children: [
@@ -125,43 +121,18 @@ class FitTopBar extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                   fontSize: 20,
                   color: FitColors.volt)),
-          const SizedBox(width: 12),
-          // universal search: try it per spec, remove if team dislikes
-          const Expanded(
-            child: SizedBox(
-              height: 38,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  hintStyle:
-                      TextStyle(color: FitColors.muted, fontSize: 13),
-                  prefixIcon:
-                      Icon(Icons.search, size: 18, color: FitColors.muted),
-                  filled: true,
-                  fillColor: FitColors.surface,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: FitColors.line)),
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-            ),
-          ),
-          IconButton(
-              onPressed: onWallet,
-              icon: const Icon(Icons.account_balance_wallet,
-                  color: FitColors.text)),
+          const Spacer(),
           GestureDetector(
             onTap: onProfile,
             child: Container(
-              width: 32,
-              height: 32,
+              width: 34,
+              height: 34,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                       colors: [FitColors.volt, Color(0xFF6FAE1C)])),
               alignment: Alignment.center,
-              child: const Text('JM',
+              child: const Text('A',
                   style: TextStyle(
                       color: Color(0xFF0F1113),
                       fontWeight: FontWeight.w800,
@@ -234,16 +205,12 @@ class GoalBar extends StatelessWidget {
 class HomeScreen extends StatefulWidget {
   final VoidCallback onOpenChallenges;
   final VoidCallback onOpenStreaks;
-  final VoidCallback onOpenWallet;
-  final VoidCallback onOpenProfile;
   final VoidCallback onOpenToday;
   final VoidCallback onOpenProgress;
   final VoidCallback onOpenLogin;
   const HomeScreen({
     required this.onOpenChallenges,
     required this.onOpenStreaks,
-    required this.onOpenWallet,
-    required this.onOpenProfile,
     required this.onOpenToday,
     required this.onOpenProgress,
     required this.onOpenLogin,
@@ -254,78 +221,93 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String category = 'Strength';
+  // ponytail: local default; real attendance state moves to backend later
+  bool _checkedIn = true;
+
+  static String _greet(int h) =>
+      h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+
+  Widget _animBar(double pct) => TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: pct),
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeOut,
+        builder: (_, v, __) => GoalBar(v),
+      );
+
   @override
   Widget build(BuildContext context) {
+    final h = TimeOfDay.now().hour;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       children: [
-        // page list (spec 2)
-        const SectionHead('Pages'),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _PageChip('Challenges', Icons.emoji_events, widget.onOpenChallenges),
-            _PageChip('Streaks', Icons.local_fire_department, widget.onOpenStreaks),
-            _PageChip('Today goal', Icons.today, widget.onOpenToday),
-            _PageChip('Progress', Icons.trending_up, widget.onOpenProgress),
-            _PageChip('Wallet', Icons.account_balance_wallet, widget.onOpenWallet),
-            _PageChip('Profile', Icons.person, widget.onOpenProfile),
-            _PageChip('Login setup', Icons.qr_code_2, widget.onOpenLogin),
-          ],
-        ),
-        // challenger video + text (spec 3)
-        const SectionHead('Featured challenge'),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: cardDec(),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: 150,
-                decoration: BoxDecoration(
-                    color: FitColors.surface2,
-                    borderRadius: BorderRadius.circular(12)),
-                alignment: Alignment.center,
-                child: const Icon(Icons.play_circle_fill,
-                    size: 48, color: FitColors.volt),
-              ),
-              const SizedBox(height: 10),
-              const Text('September Sweat Challenge',
-                  style:
-                      TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
-              const SizedBox(height: 4),
-              const Text(
-                  'Log 20 workouts this month to unlock the club merch drop and 500 bonus points.',
-                  style: TextStyle(fontSize: 12.5, color: FitColors.muted)),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: ['Strength', 'Cardio', 'Yoga'].map((c) {
-                  final sel = category == c;
-                  return ChoiceChip(
-                    label: Text(c,
-                        style: TextStyle(
-                            color: sel
-                                ? const Color(0xFF0F1113)
-                                : FitColors.text,
-                            fontSize: 12)),
-                    selected: sel,
-                    selectedColor: FitColors.volt,
-                    backgroundColor: FitColors.surface2,
-                    onSelected: (_) => setState(() => category = c),
-                  );
-                }).toList(),
-              ),
-              Text('Showing challenges for: $category',
+              Text('${_greet(h)}, Adarsh 👋',
                   style: const TextStyle(
-                      fontSize: 11.5, color: FitColors.muted)),
+                      fontWeight: FontWeight.w800, fontSize: 22)),
+              const SizedBox(height: 3),
+              const Text('Ready to keep your streak alive?',
+                  style: TextStyle(fontSize: 13, color: FitColors.muted)),
             ],
           ),
         ),
-        // streak left + login setup right (spec 7)
+        SectionHead('Today\'s workout',
+            action: 'Details', onAction: widget.onOpenToday),
+        Container(
+          padding: const EdgeInsets.all(16),
+          // ponytail: layered deco only; full hero component when design-system port lands
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [FitColors.surface2, FitColors.surface]),
+            border: const Border(
+              left: BorderSide(color: FitColors.volt, width: 3),
+              top: BorderSide(color: FitColors.line),
+              right: BorderSide(color: FitColors.line),
+              bottom: BorderSide(color: FitColors.line),
+            ),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('TODAY\'S WORKOUT',
+                  style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 0.8,
+                      color: FitColors.volt,
+                      fontWeight: FontWeight.w700)),
+              const SizedBox(height: 6),
+              const Text('Upper Body Push',
+                  style:
+                      TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+              const SizedBox(height: 2),
+              const Text('4 / 6 exercises completed · 67%',
+                  style: TextStyle(fontSize: 12.5, color: FitColors.muted)),
+              const SizedBox(height: 8),
+              _animBar(0.67),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: widget.onOpenToday,
+                  style: FilledButton.styleFrom(
+                      backgroundColor: FitColors.volt,
+                      foregroundColor: const Color(0xFF0F1113),
+                      minimumSize: const Size.fromHeight(48),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12))),
+                  child: const Text('Continue workout →',
+                      style: TextStyle(fontWeight: FontWeight.w800)),
+                ),
+              ),
+            ],
+          ),
+        ),
         const SectionHead('Streak & check-in'),
         Row(
           children: [
@@ -333,19 +315,17 @@ class _HomeScreenState extends State<HomeScreen> {
               child: GestureDetector(
                 onTap: widget.onOpenStreaks,
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14),
                   decoration: cardDec(),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('12',
                           style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 24,
-                              color: FitColors.heat)),
-                      Text('Day streak 🔥',
+                              fontWeight: FontWeight.w900, fontSize: 32)),
+                      Text('DAY STREAK 🔥',
                           style: TextStyle(
-                              fontSize: 12, color: FitColors.muted)),
+                              fontSize: 11.5, color: FitColors.muted)),
                     ],
                   ),
                 ),
@@ -354,20 +334,30 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 12),
             Expanded(
               child: GestureDetector(
-                onTap: widget.onOpenLogin,
+                onTap: () {
+                  if (_checkedIn) {
+                    widget.onOpenLogin();
+                  } else {
+                    setState(() => _checkedIn = true);
+                    widget.onOpenToday();
+                  }
+                },
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14),
                   decoration: cardDec(),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.qr_code_2, color: FitColors.volt),
-                      SizedBox(height: 6),
-                      Text('Tap to check in',
+                      Text(_checkedIn ? '✓' : '→',
                           style: TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 13)),
-                      Text('Barcode · Face · Bio',
-                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 28,
+                              color: _checkedIn
+                                  ? FitColors.volt
+                                  : FitColors.text)),
+                      Text(
+                          _checkedIn ? 'CHECKED IN' : 'CHECK IN TODAY →',
+                          style: const TextStyle(
                               fontSize: 11.5, color: FitColors.muted)),
                     ],
                   ),
@@ -376,48 +366,118 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        // today goal strip (spec 8)
-        SectionHead('Today goal', action: 'Open', onAction: widget.onOpenToday),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: cardDec(),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Upper Body Push',
-                      style: TextStyle(fontWeight: FontWeight.w700)),
-                  Text('4/6 done',
-                      style: TextStyle(
-                          fontSize: 12, color: FitColors.muted)),
-                ],
-              ),
-              SizedBox(height: 8),
-              GoalBar(0.65),
-            ],
+        SectionHead('Featured challenge',
+            action: 'View challenge →', onAction: widget.onOpenChallenges),
+        GestureDetector(
+          onTap: widget.onOpenChallenges,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: cardDec(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: FitColors.surface2,
+                      borderRadius: BorderRadius.circular(12)),
+                  alignment: Alignment.center,
+                  child: const AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Icon(Icons.play_circle_fill,
+                        size: 48, color: FitColors.volt),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text('September Sweat Challenge',
+                    style:
+                        TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                const Text('20 workouts · 500 pts',
+                    style: TextStyle(fontSize: 12, color: FitColors.muted)),
+              ],
+            ),
           ),
         ),
-        // weekly/monthly strip (spec 9)
-        SectionHead('Weekly / Monthly',
+        SectionHead('Your progress',
             action: 'Details', onAction: widget.onOpenProgress),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: cardDec(),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('4/5 this week · 12/20 September',
-                  style: TextStyle(
-                      fontSize: 12.5, fontWeight: FontWeight.w600)),
-              SizedBox(height: 8),
-              GoalBar(0.6),
-              SizedBox(height: 6),
-              Text('Remark: on track, keep pushing 💪',
-                  style:
-                      TextStyle(fontSize: 11.5, color: FitColors.muted)),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('4 / 5',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
+                  Text('WORKOUTS THIS WEEK',
+                      style:
+                          TextStyle(fontSize: 11.5, color: FitColors.muted)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              _animBar(0.8),
+              const SizedBox(height: 6),
+              const Text('1 workout left to hit your weekly goal',
+                  style: TextStyle(fontSize: 11.5, color: FitColors.muted)),
             ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: cardDec(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('September · 12 / 20',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
+                  Text('60%',
+                      style:
+                          TextStyle(fontSize: 11.5, color: FitColors.muted)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              _animBar(0.6),
+            ],
+          ),
+        ),
+        const SectionHead('Quick stats'),
+        const Row(
+          children: [
+            Expanded(child: _StatCard(num: '4', lbl: 'Workouts · week')),
+            SizedBox(width: 12),
+            Expanded(child: _StatCard(num: '2,140', lbl: 'Points')),
+          ],
+        ),
+        SectionHead('Up next',
+            action: 'All →', onAction: widget.onOpenChallenges),
+        GestureDetector(
+          onTap: widget.onOpenChallenges,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: cardDec(),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('HIIT Circuit',
+                        style: TextStyle(fontWeight: FontWeight.w700)),
+                    Text('Today · 6:30 PM · Coach Rae',
+                        style: TextStyle(
+                            fontSize: 12, color: FitColors.muted)),
+                  ],
+                ),
+                Text('Join',
+                    style: TextStyle(
+                        color: FitColors.volt, fontWeight: FontWeight.w700)),
+              ],
+            ),
           ),
         ),
       ],
@@ -425,30 +485,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _PageChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-  const _PageChip(this.label, this.icon, this.onTap);
+class _StatCard extends StatelessWidget {
+  final String num;
+  final String lbl;
+  const _StatCard({required this.num, required this.lbl});
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-            color: FitColors.surface,
-            border: Border.all(color: FitColors.line),
-            borderRadius: BorderRadius.circular(20)),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 16, color: FitColors.volt),
-            const SizedBox(width: 6),
-            Text(label, style: const TextStyle(fontSize: 12.5)),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: cardDec(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(num,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w800, fontSize: 20)),
+          const SizedBox(height: 3),
+          Text(lbl.toUpperCase(),
+              style: const TextStyle(
+                  fontSize: 10.5,
+                  letterSpacing: 0.6,
+                  color: FitColors.muted)),
+        ],
       ),
     );
   }
@@ -623,68 +681,312 @@ class _ActionBtn extends StatelessWidget {
 
 // ---------- 3. STREAKS (Vedant) ----------
 
-class StreaksScreen extends StatelessWidget {
+class StreaksScreen extends StatefulWidget {
   const StreaksScreen({super.key});
   @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: cardDec(),
-          child: const Column(
+  State<StreaksScreen> createState() => _StreaksScreenState();
+}
+
+class _StreaksScreenState extends State<StreaksScreen> {
+  // ponytail: mirrors web state object; backend binds the same keys later
+  static const _streak = 12, _best = 21, _rewardAt = 15, _points = 2140;
+
+  // ponytail: in-memory claim; shared_preferences when backend lands
+  bool _claimed = false;
+
+  // Monday-aligned 4-week window ending with the current week; missed pattern
+  // is a placeholder until the backend log lands
+  bool _doneAt(int daysAgo) {
+    if (daysAgo == 0) return true;
+    final d = DateTime.now().subtract(Duration(days: daysAgo));
+    return (d.day + d.month) % 9 != 0;
+  }
+
+  static const _dows = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  Widget _dowRow() => Row(
+        children: _dows
+            .map((w) => Expanded(
+                child: Text(w,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 10.5,
+                        color: FitColors.muted,
+                        fontWeight: FontWeight.w600))))
+            .toList(),
+      );
+
+  void _dayDetail(int daysAgo) {
+    final d = DateTime.now().subtract(Duration(days: daysAgo));
+    final future = daysAgo < 0;
+    final done = !future && _doneAt(daysAgo);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: FitColors.surface2,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('🔥',
-                  style: TextStyle(fontSize: 40)),
-              SizedBox(height: 8),
-              Text('12 day streak',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900, fontSize: 22)),
-              Text('Best: 21 days · Rewards unlock at 15',
-                  style: TextStyle(
-                      fontSize: 12, color: FitColors.muted)),
-              SizedBox(height: 12),
-              GoalBar(0.8),
+              Text('${_dow(d.weekday)}, ${d.day} ${_mon(d.month)}'.toUpperCase(),
+                  style: const TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 1,
+                      color: FitColors.muted,
+                      fontWeight: FontWeight.w700)),
+              const SizedBox(height: 4),
+              Text(
+                  future
+                      ? 'Upcoming'
+                      : daysAgo == 0
+                          ? (done
+                              ? 'Checked in today'
+                              : 'Today — not yet logged')
+                          : done
+                              ? 'Workout completed'
+                              : 'No workout logged',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w800, fontSize: 18)),
             ],
           ),
         ),
-        const SectionHead('Attendance grid'),
+      ),
+    );
+  }
+
+  static String _dow(int w) =>
+      const ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][w];
+  static String _mon(int m) => const [
+        '',
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ][m];
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = _streak / _rewardAt;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final start = today.subtract(Duration(days: (today.weekday - 1) + 21));
+    int dn = 0, n = 0;
+    for (var i = 0; i < 28; i++) {
+      final d = start.add(Duration(days: i));
+      if (d.isAfter(today)) continue;
+      n++;
+      if (_doneAt(today.difference(d).inDays)) dn++;
+    }
+    final summary =
+        '$dn / $n days active · ${(dn / n * 100).round()}% consistency';
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      children: [
+        Container(
+          padding: const EdgeInsets.fromLTRB(18, 22, 18, 22),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [FitColors.surface2, FitColors.surface]),
+            border: Border.all(color: FitColors.line),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              const Text('STREAK',
+                  style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 1.5,
+                      color: FitColors.muted,
+                      fontWeight: FontWeight.w700)),
+              const SizedBox(height: 10),
+              const Icon(Icons.local_fire_department,
+                  size: 54, color: FitColors.ember),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: _streak.toDouble()),
+                duration: const Duration(milliseconds: 650),
+                curve: Curves.easeOut,
+                builder: (_, v, __) => Text('${v.round()}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 56,
+                        height: 1.05)),
+              ),
+              const Text('DAY STREAK',
+                  style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 2,
+                      color: FitColors.muted,
+                      fontWeight: FontWeight.w700)),
+              const SizedBox(height: 10),
+              Text('Best · $_best days',
+                  style: const TextStyle(
+                      fontSize: 12, color: FitColors.muted)),
+              const SizedBox(height: 8),
+              Container(
+                margin: const EdgeInsets.only(top: 14),
+                padding: const EdgeInsets.only(top: 14),
+                decoration: const BoxDecoration(
+                    border: Border(
+                        top: BorderSide(color: FitColors.line))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('NEXT REWARD · 15 DAYS',
+                        style: TextStyle(
+                            fontSize: 11,
+                            letterSpacing: 1,
+                            color: FitColors.volt,
+                            fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                            '${_rewardAt - _streak} days to go · $_streak/$_rewardAt',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w700)),
+                        Text('${(pct * 100).round()}%',
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: FitColors.muted)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0, end: pct),
+                      duration: const Duration(milliseconds: 700),
+                      curve: Curves.easeOut,
+                      builder: (_, v, __) => GoalBar(v),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SectionHead('Your consistency'),
         Container(
           padding: const EdgeInsets.all(14),
           decoration: cardDec(),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7,
-                    mainAxisSpacing: 6,
-                    crossAxisSpacing: 6),
-            itemCount: 28,
-            itemBuilder: (_, i) => Container(
-              decoration: BoxDecoration(
-                  color: i % 5 == 4
-                      ? FitColors.surface2
-                      : FitColors.volt.withOpacity(0.85),
-                  borderRadius: BorderRadius.circular(6)),
-            ),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 252),
+                  child: Column(
+                    children: [
+                      _dowRow(),
+                      const SizedBox(height: 8),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 7,
+                            mainAxisSpacing: 7,
+                            crossAxisSpacing: 7),
+                        itemCount: 28,
+                        itemBuilder: (_, i) {
+                          final d = start.add(Duration(days: i));
+                          final daysAgo = today.difference(d).inDays;
+                          final isFuture = daysAgo < 0;
+                          final done = !isFuture && _doneAt(daysAgo);
+                          return GestureDetector(
+                            onTap: () => _dayDetail(daysAgo),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: done
+                                    ? FitColors.volt
+                                    : isFuture
+                                        ? FitColors.surface
+                                        : FitColors.surface3,
+                                border: Border.all(
+                                    color: done || daysAgo == 0
+                                        ? FitColors.volt
+                                        : FitColors.line),
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              alignment: Alignment.center,
+                              child: daysAgo == 0 && done
+                                  ? Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: FitColors.surface),
+                                    )
+                                  : null,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(summary,
+                  style: const TextStyle(
+                      fontSize: 11, color: FitColors.muted)),
+            ],
           ),
         ),
-        const SectionHead('Rewards → Wallet'),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: cardDec(),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('500 pts = merch drop',
-                  style: TextStyle(fontSize: 13)),
-              Text('Claim ›',
-                  style: TextStyle(
-                      color: FitColors.volt,
-                      fontWeight: FontWeight.w700)),
-            ],
+        const SectionHead('Next reward'),
+        GestureDetector(
+          onTap: _claimed
+              ? null
+              : () => setState(() => _claimed = true),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: cardDec(),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                      color: FitColors.volt.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(12)),
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.card_giftcard,
+                      color: FitColors.volt),
+                ),
+                const SizedBox(width: 14),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('500 POINTS',
+                          style:
+                              TextStyle(fontWeight: FontWeight.w800)),
+                      Text('Merch drop · You have 2,140 pts',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: FitColors.muted)),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 18, vertical: 10),
+                  decoration: BoxDecoration(
+                      color: _claimed
+                          ? FitColors.surface3
+                          : FitColors.volt,
+                      borderRadius: BorderRadius.circular(22)),
+                  child: Text(_claimed ? 'CLAIMED ✓' : 'Claim →',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12.5,
+                          color: _claimed
+                              ? FitColors.muted
+                              : const Color(0xFF0F1113))),
+                ),
+              ],
+            ),
           ),
         ),
       ],
