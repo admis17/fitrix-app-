@@ -151,6 +151,96 @@ svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .ghost{width:100%;background:none;border:1px solid var(--line);color:var(--t1);border-radius:12px;min-height:44px;margin-top:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px}
 .view.active .stage{opacity:0;animation:up var(--m-std) ease forwards;animation-delay:var(--s,0s)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rise,.stage,.cell{opacity:1}.fp i,.bar i{transition:none}}
+/* --- CHALLENGES REDESIGN --- */
+.ch-header{margin-bottom:2px}.ch-title{font-weight:900;font-size:22px;letter-spacing:-.5px}.ch-sub{font-size:12.5px;color:var(--t2);margin-top:3px}
+.video-cover{height:148px;position:relative;overflow:hidden;border-radius:12px;background:
+  linear-gradient(105deg, rgba(177,229,49,.16) 0%, transparent 45%),
+  linear-gradient(to top, rgba(0,0,0,.58) 0%, rgba(0,0,0,.15) 55%, transparent 100%),
+  radial-gradient(ellipse at 75% 28%, rgba(177,229,49,.18), transparent 42%),
+  linear-gradient(135deg,#1B2600 0%,#243600 32%,#0F1400 72%, #1A1A1A 100%);
+  display:flex;align-items:center;justify-content:center}
+.video-cover::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg, transparent, transparent 36px, rgba(255,255,255,.02) 36px, rgba(255,255,255,.02) 37px);opacity:.45}
+.play-btn{position:relative;z-index:1;width:52px;height:52px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.play-btn span{margin-left:2px;font-size:20px;color:#121212}
+.video-meta{position:absolute;bottom:10px;left:10px;right:10px;z-index:1;display:flex;justify-content:space-between;align-items:center}
+.video-badge{background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:10.5px;font-weight:700;padding:5px 8px;border-radius:7px}
+.video-time{background:rgba(0,0,0,.65);color:#fff;font-size:10.5px;font-weight:600;padding:4px 6px;border-radius:6px}
+.ch-card{padding:13px 14px;border-radius:var(--r);display:flex;align-items:center;gap:12px;transition:.15s}
+.ch-card:hover{border-color:rgba(255,255,255,.12)}
+.ch-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:15px;flex-shrink:0;background:var(--s2);border:1px solid var(--line);color:var(--t1)}
+.pill{font-size:11px;font-weight:800;padding:6px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;letter-spacing:.1px}
+.pill-join{background:rgba(177,229,49,.13);color:var(--lime);border-color:rgba(177,229,49,.22)}
+.pill-full{background:rgba(255,91,61,.13);color:var(--danger);border-color:rgba(255,91,61,.20)}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+.lb-row+.lb-row{border-top:1px solid var(--line)}
+.lb-rank{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900;flex-shrink:0}
+.rank-1{background:var(--lime);color:#121212}.rank-2{background:#E8E8E8;color:#121212}.rank-3{background:#C9A86A;color:#121212}
+.lb-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0;color:#fff}
+.lb-row.self{background:rgba(177,229,49,.07);border:1px solid rgba(177,229,49,.18);border-radius:12px;padding:10px 10px;margin-top:6px}
+.prize-card{display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:var(--r);background:linear-gradient(135deg, rgba(177,229,49,.10), transparent 60%), var(--s1);border:1px solid rgba(177,229,49,.18)}
+.prize-left{display:flex;align-items:center;gap:12px}
+.prize-icon{width:42px;height:42px;border-radius:12px;background:rgba(177,229,49,.14);border:1px solid rgba(177,229,49,.22);display:grid;place-items:center;font-size:20px}
+.prize-amt{font-weight:900;font-size:20px;color:var(--lime);letter-spacing:-.3px}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.btn-primary{background:var(--lime);color:#0f1113;border:none;border-radius:12px;padding:12px;font-weight:900;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn-secondary{background:var(--s1);color:var(--t1);border:1px solid var(--line);border-radius:12px;padding:12px;font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn-primary:hover{background:#c4f84c}.btn-secondary:hover{border-color:rgba(255,255,255,.12);background:var(--s2)}
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0f1113;color:var(--text);font-family:Inter,system-ui,sans-serif;display:flex;justify-content:center;padding:24px 12px;min-height:100vh}
+.device{width:390px;max-width:100%;height:840px;max-height:94vh;background:var(--bg);border-radius:40px;border:8px solid #05070a;overflow:hidden;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:10px;padding:16px 14px 10px;border-bottom:1px solid var(--line)}
+.brand{font-weight:900;font-size:19px;white-space:nowrap}.brand span{color:var(--volt)}
+.search{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--text)}.search::placeholder{color:var(--muted)}
+.iconbtn{background:var(--surface);border:1px solid var(--line);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
+.screen{flex:1;overflow-y:auto;padding:14px 16px 10px;scrollbar-width:none}.screen::-webkit-scrollbar{display:none}
+.view{display:none}.view.active{display:block;animation:f .3s ease}@keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+h2{font-weight:900;letter-spacing:-.5px}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}.sec h3{font-size:11px;letter-spacing:.8px;color:var(--muted);text-transform:uppercase}.sec a{font-size:12px;color:var(--volt);font-weight:600;cursor:pointer;text-decoration:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:9px 12px;font-size:12px;cursor:pointer}.chip b{color:var(--volt)}
+.row2{display:flex;gap:12px}.row2>.card{flex:1}
+.bar{height:8px;background:var(--surface2);border-radius:6px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#9fd028,var(--volt))}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.grid i{aspect-ratio:1;border-radius:6px;background:var(--volt);opacity:.85}.grid i.off{background:var(--surface2);opacity:1}
+.btn{background:var(--volt);color:#0f1113;border:none;border-radius:12px;padding:12px;font-weight:800;width:100%;cursor:pointer;margin-top:8px}
+.tag{font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;background:rgba(198,255,0,.12);color:var(--volt);border:1px solid rgba(198,255,0,.18)}.tag.full{background:rgba(255,91,61,.12);color:var(--heat);border-color:rgba(255,91,61,.18)}
+.list{display:flex;align-items:center;gap:10px}.list+.list{margin-top:10px}
+.navbar{display:flex;justify-content:space-around;padding:10px 6px 16px;border-top:1px solid var(--line);background:rgba(18,18,18,.96)}.navbar button{background:none;border:none;color:var(--muted);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}.navbar button.active{color:var(--volt)}.navbar span{font-size:18px}
+.video{height:140px;background:var(--surface2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:10px}
+.muted{color:var(--muted);font-size:12px}
+/* --- CHALLENGES REDESIGN --- */
+.ch-header{margin-bottom:2px}.ch-title{font-weight:900;font-size:22px;letter-spacing:-.5px}.ch-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
+.video-cover{height:148px;position:relative;overflow:hidden;border-radius:12px;background:
+  linear-gradient(105deg, rgba(198,255,0,.16) 0%, transparent 45%),
+  linear-gradient(to top, rgba(0,0,0,.58) 0%, rgba(0,0,0,.15) 55%, transparent 100%),
+  radial-gradient(ellipse at 75% 28%, rgba(198,255,0,.18), transparent 42%),
+  linear-gradient(135deg,#1B2600 0%,#243600 32%,#0F1400 72%, #1A1A1A 100%);
+  display:flex;align-items:center;justify-content:center}
+.video-cover::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg, transparent, transparent 36px, rgba(255,255,255,.02) 36px, rgba(255,255,255,.02) 37px);opacity:.45}
+.play-btn{position:relative;z-index:1;width:52px;height:52px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.play-btn span{margin-left:2px;font-size:20px;color:#121212}
+.video-meta{position:absolute;bottom:10px;left:10px;right:10px;z-index:1;display:flex;justify-content:space-between;align-items:center}
+.video-badge{background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:10.5px;font-weight:700;padding:5px 8px;border-radius:7px}
+.video-time{background:rgba(0,0,0,.65);color:#fff;font-size:10.5px;font-weight:600;padding:4px 6px;border-radius:6px}
+.ch-card{padding:13px 14px;border-radius:var(--r);display:flex;align-items:center;gap:12px;transition:.15s}
+.ch-card:hover{border-color:var(--line-hover)}
+.ch-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:15px;flex-shrink:0;background:var(--surface2);border:1px solid var(--line);color:var(--text)}
+.pill{font-size:11px;font-weight:800;padding:6px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;letter-spacing:.1px}
+.pill-join{background:rgba(198,255,0,.13);color:var(--volt);border-color:rgba(198,255,0,.22)}
+.pill-full{background:rgba(255,91,61,.13);color:var(--heat);border-color:rgba(255,91,61,.20)}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+.lb-row+.lb-row{border-top:1px solid var(--line)}
+.lb-rank{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900;flex-shrink:0}
+.rank-1{background:var(--volt);color:#121212}.rank-2{background:#E8E8E8;color:#121212}.rank-3{background:#C9A86A;color:#121212}
+.lb-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0;color:#fff}
+.lb-row.self{background:rgba(198,255,0,.07);border:1px solid rgba(198,255,0,.18);border-radius:12px;padding:10px 10px;margin-top:6px}
+.prize-card{display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:var(--r);background:linear-gradient(135deg, rgba(198,255,0,.10), transparent 60%), var(--surface);border:1px solid rgba(198,255,0,.18)}
+.prize-left{display:flex;align-items:center;gap:12px}
+.prize-icon{width:42px;height:42px;border-radius:12px;background:rgba(198,255,0,.14);border:1px solid rgba(198,255,0,.22);display:grid;place-items:center;font-size:20px}
+.prize-amt{font-weight:900;font-size:20px;color:var(--volt);letter-spacing:-.3px}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.btn-primary{background:var(--volt);color:#121212;border:none;border-radius:12px;padding:12px;font-weight:900;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px;font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn-primary:hover{background:var(--volt-hover)}.btn-secondary:hover{border-color:var(--line-hover);background:var(--surface2)}
+
 </style>
 </head>
 <body>
@@ -208,6 +298,66 @@ svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke
 <div class="sec"><h3>Leaderboard</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span>Sara K.</span><span class="muted">14 attempts · <b style="color:var(--lime)">980</b></span></div><div class="list" style="justify-content:space-between"><span>Diego M.</span><span class="muted">12 attempts · <b style="color:var(--lime)">920</b></span></div><div class="list" style="justify-content:space-between"><span>Jordan (you)</span><span class="muted">10 attempts · <b style="color:var(--lime)">840</b></span></div></div>
 <div class="sec"><h3>Prize pool</h3></div><div class="card"><div class="list" style="justify-content:space-between"><span>Set by gym / participants</span><b style="color:var(--lime)">₹5,000</b></div></div>
 <div class="chips"><span class="chip">＋ Add challenge</span><span class="chip" onclick="show('login')">✓ Participate</span><span class="chip">◷ History</span><span class="chip">₹ Add prize</span></div></div>
+<div class="topbar"><div class="brand">FIT<span>RIX</span></div><input class="search" placeholder="Search challenges"><div class="iconbtn" onclick="show('wallet')" title="Wallet">◈</div><div class="iconbtn" onclick="show('profile')" title="Profile">☺</div></div>
+<div class="screen">
+<!-- HOME -->
+<div class="view active" id="v-home"><h2>Home</h2><div class="muted">Adarsh · lists all pages</div>
+<div class="sec"><h3>Pages</h3></div><div class="chips"><span class="chip" onclick="show('challenges')"><b>◉</b> Challenges</span><span class="chip" onclick="show('streaks')"><b>🔥</b> Streaks</span><span class="chip" onclick="show('today')"><b>◉</b> Today goal</span><span class="chip" onclick="show('progress')"><b>◉</b> Progress</span><span class="chip" onclick="show('wallet')"><b>◉</b> Wallet</span><span class="chip" onclick="show('profile')"><b>◉</b> Profile</span><span class="chip" onclick="show('login')"><b>◉</b> Login setup</span></div>
+<div class="sec"><h3>Featured challenge video</h3></div><div class="card"><div class="video">▶</div><b>September Sweat Challenge</b><div class="muted">Log 20 workouts → merch + 500 pts. Category: Strength (picked at signup, filters challenges).</div></div>
+<div class="sec"><h3>Streak & check-in</h3></div><div class="row2"><div class="card" onclick="show('streaks')" style="cursor:pointer"><div style="font-size:24px;font-weight:900;color:var(--heat)">12</div><div class="muted">Day streak 🔥</div></div><div class="card" onclick="show('login')" style="cursor:pointer"><div style="font-size:22px">▦</div><b style="font-size:13px">Tap to check in</b><div class="muted">Barcode · Face · Bio</div></div></div>
+<div class="sec"><h3>Today goal</h3><a onclick="show('today')">Open</a></div><div class="card"><div class="list" style="justify-content:space-between"><b>Upper Body Push</b><span class="muted">4/6 done</span></div><div class="bar"><i style="width:65%"></i></div></div>
+<div class="sec"><h3>Weekly / monthly</h3><a onclick="show('progress')">Details</a></div><div class="card">4/5 this week · 12/20 September<div class="bar"><i style="width:60%"></i></div><div class="muted" style="margin-top:6px">Remark: on track, keep pushing 💪</div></div></div>
+<!-- CHALLENGES — redesigned -->
+<div class="view" id="v-challenges">
+<div class="ch-header"><h2 class="ch-title">Challenges</h2><div class="ch-sub">Today • 3 active • 12 Sept</div></div>
+
+<div class="sec"><h3>Today challenges</h3></div>
+<div class="card ch-card" style="cursor:pointer" onclick="show('login')">
+  <div class="ch-icon">⚡</div>
+  <div style="flex:1;min-width:0"><b style="font-size:13.5px">HIIT Circuit</b><div class="muted" style="font-size:12px">⏱ 6:30 PM · Coach Rae · Strength</div></div>
+  <span class="pill pill-join">● Join</span>
+</div>
+<div class="card ch-card" style="opacity:.92">
+  <div class="ch-icon">🧘</div>
+  <div style="flex:1;min-width:0"><b style="font-size:13.5px">Power Yoga</b><div class="muted" style="font-size:12px">⏱ 7:15 PM · Coach Tom · Flex</div></div>
+  <span class="pill pill-full">✕ Full</span>
+</div>
+<div class="card ch-card" style="cursor:pointer" onclick="show('login')">
+  <div class="ch-icon">🚴</div>
+  <div style="flex:1;min-width:0"><b style="font-size:13.5px">Spin &amp; Burn</b><div class="muted" style="font-size:12px">⏱ 8:00 PM · Coach Alex · Cardio</div></div>
+  <span class="pill pill-join">● Join</span>
+</div>
+
+<div class="sec"><h3>Challenger spotlight</h3></div>
+<div class="card" style="padding:0;overflow:hidden">
+  <div class="video-cover">
+    <div class="play-btn"><span>▶</span></div>
+    <div class="video-meta"><span class="video-badge">▶ 30s preview</span><span class="video-time">0:30</span></div>
+  </div>
+  <div style="padding:12px 14px"><b style="font-size:13px">Challenger intro — September Sweat</b><div class="muted" style="font-size:12px;margin-top:2px">Top form this week • Tap to watch full</div></div>
+</div>
+
+<div class="sec"><h3>Leaderboard</h3></div>
+<div class="card" style="padding:12px 14px">
+  <div class="lb-row"><span class="lb-rank rank-1">1</span><span class="lb-avatar" style="background:linear-gradient(135deg,#6FAE1C,#C6FF00);color:#121212">SK</span><span style="flex:1;font-weight:600;font-size:13px">Sara K.</span><span class="muted" style="font-size:11.5px">14 · <b style="color:var(--volt)">980 pts</b></span></div>
+  <div class="lb-row"><span class="lb-rank rank-2">2</span><span class="lb-avatar" style="background:#3A4047;color:#fff">DM</span><span style="flex:1;font-weight:600;font-size:13px">Diego M.</span><span class="muted" style="font-size:11.5px">12 · <b style="color:var(--volt)">920 pts</b></span></div>
+  <div class="lb-row self"><span class="lb-rank rank-3">3</span><span class="lb-avatar" style="background:var(--volt);color:#121212">JM</span><span style="flex:1;font-weight:700;font-size:13px">Jordan (you) <span style="background:var(--volt);color:#121212;font-size:9px;padding:2px 5px;border-radius:20px;margin-left:4px">YOU</span></span><span class="muted" style="font-size:11.5px">10 · <b style="color:var(--volt)">840 pts</b></span></div>
+</div>
+
+<div class="sec"><h3>Prize pool</h3></div>
+<div class="prize-card">
+  <div class="prize-left"><div class="prize-icon">🏆</div><div><div class="muted" style="font-size:11px;letter-spacing:.5px;text-transform:uppercase">Total pool</div><div class="muted" style="font-size:11px">Set by gym &amp; participants</div></div></div>
+  <div class="prize-amt">₹5,000</div>
+</div>
+
+<div class="action-grid">
+  <button class="btn-primary" onclick="show('login')">✓ Participate</button>
+  <button class="btn-secondary">＋ Add challenge</button>
+  <button class="btn-secondary">◷ History</button>
+  <button class="btn-secondary">₹ Add prize</button>
+</div>
+</div>
+
 <!-- STREAKS -->
 <div class="view" id="v-streaks">
 <h2 class="stage">Streaks</h2>

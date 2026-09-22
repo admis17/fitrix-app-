@@ -1,0 +1,13 @@
+# deps
+node_modules/
+# vite build output
+dist/
+# tsc build info + compiled config artifacts
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+# vite cache
+.vite/
+# OS / editor
+.DS_Store
+Thumbs.db

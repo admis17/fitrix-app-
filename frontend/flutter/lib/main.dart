@@ -520,126 +520,230 @@ class ChallengesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const today = [
-      ('HIIT Circuit', '6:30 PM · Coach Rae', 'Join'),
-      ('Power Yoga', '7:15 PM · Coach Tom', 'Full'),
-      ('Spin & Burn', '8:00 PM · Coach Alex', 'Join'),
-    ];
-    const board = [
-      ('Sara K.', '14 attempts', '980'),
-      ('Diego M.', '12 attempts', '920'),
-      ('Jordan M. (you)', '10 attempts', '840'),
-    ];
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
       children: [
+        // header with meaningful subtitle (replaces debug "Bhushan · same navbar")
+        const Padding(
+          padding: EdgeInsets.only(top: 4, bottom: 2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Challenges',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 22,
+                      letterSpacing: -0.5)),
+              SizedBox(height: 2),
+              Text('Today • 3 active • 12 Sept',
+                  style: TextStyle(fontSize: 12.5, color: FitColors.muted)),
+            ],
+          ),
+        ),
         const SectionHead('Today challenges'),
-        ...today.map((t) => Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(14),
-              decoration: cardDec(),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                          children: [
-                        Text(t.$1,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w700)),
-                        Text(t.$2,
-                            style: const TextStyle(
-                                fontSize: 12,
-                                color: FitColors.muted)),
-                      ])),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                        color: t.$3 == 'Full'
-                            ? FitColors.heat.withOpacity(0.15)
-                            : FitColors.volt.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(t.$3,
-                        style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: t.$3 == 'Full'
-                                ? FitColors.heat
-                                : FitColors.volt)),
-                  ),
-                ],
-              ),
-            )),
-        const SectionHead('Challenger video / photo'),
+        _ChChallengeCard(
+            icon: Icons.bolt,
+            title: 'HIIT Circuit',
+            meta: '⏱ 6:30 PM · Coach Rae · Strength',
+            status: 'Join',
+            isJoin: true,
+            onTap: onOpenLogin),
+        _ChChallengeCard(
+            icon: Icons.self_improvement,
+            title: 'Power Yoga',
+            meta: '⏱ 7:15 PM · Coach Tom · Flex',
+            status: 'Full',
+            isJoin: false),
+        _ChChallengeCard(
+            icon: Icons.directions_bike,
+            title: 'Spin & Burn',
+            meta: '⏱ 8:00 PM · Coach Alex · Cardio',
+            status: 'Join',
+            isJoin: true,
+            onTap: onOpenLogin),
+        const SectionHead('Challenger spotlight'),
         Container(
-          height: 150,
           decoration: cardDec(),
-          alignment: Alignment.center,
-          child: const Icon(Icons.play_circle_fill,
-              size: 48, color: FitColors.volt),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 148,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF1B2600),
+                      Color(0xFF243600),
+                      Color(0xFF0F1400)
+                    ],
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.55)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: 52,
+                        height: 52,
+                        decoration: const BoxDecoration(
+                            color: Colors.white, shape: BoxShape.circle),
+                        child: const Icon(Icons.play_arrow,
+                            color: Color(0xFF121212), size: 28),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 10,
+                      left: 10,
+                      right: 10,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 4),
+                            decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.55),
+                                borderRadius: BorderRadius.circular(7),
+                                border: Border.all(
+                                    color: Colors.white24)),
+                            child: const Text('▶ 30s preview',
+                                style: TextStyle(
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white)),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 4),
+                            decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.65),
+                                borderRadius: BorderRadius.circular(6)),
+                            child: const Text('0:30',
+                                style: TextStyle(
+                                    fontSize: 10.5,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Challenger intro — September Sweat',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 13)),
+                    SizedBox(height: 2),
+                    Text('Top form this week • Tap to watch full',
+                        style: TextStyle(
+                            fontSize: 12, color: FitColors.muted)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         const SectionHead('Leaderboard'),
         Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: cardDec(),
-          child: Column(
-            children: board
-                .map((b) => Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: Text(b.$1,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13.5))),
-                          Text(b.$2,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  color: FitColors.muted)),
-                          const SizedBox(width: 10),
-                          Text('${b.$3} pts',
-                              style: const TextStyle(
-                                  fontSize: 12.5,
-                                  color: FitColors.volt,
-                                  fontWeight: FontWeight.w700)),
-                        ],
-                      ),
-                    ))
-                .toList(),
+          child: const Column(
+            children: [
+              _LbRow(
+                  rank: 1,
+                  initials: 'SK',
+                  name: 'Sara K.',
+                  attempts: '14',
+                  pts: '980',
+                  rankColor: FitColors.volt),
+              _LbRow(
+                  rank: 2,
+                  initials: 'DM',
+                  name: 'Diego M.',
+                  attempts: '12',
+                  pts: '920',
+                  rankColor: Color(0xFFE8E8E8)),
+              _LbSelfRow(),
+            ],
           ),
         ),
         const SectionHead('Prize pool'),
         Container(
           padding: const EdgeInsets.all(16),
-          decoration: cardDec(),
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0x3348FF00)),
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF252A1E), Color(0xFF1E1E1E)]),
+          ),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Set by gym / participants',
-                  style: TextStyle(fontSize: 13)),
+              Row(
+                children: [
+                  _PrizeIcon(),
+                  SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('TOTAL POOL',
+                          style: TextStyle(
+                              fontSize: 10,
+                              letterSpacing: 0.6,
+                              color: FitColors.muted,
+                              fontWeight: FontWeight.w700)),
+                      Text('Set by gym & participants',
+                          style: TextStyle(
+                              fontSize: 11, color: FitColors.muted)),
+                    ],
+                  ),
+                ],
+              ),
               Text('₹5,000',
                   style: TextStyle(
                       color: FitColors.volt,
                       fontWeight: FontWeight.w900,
-                      fontSize: 16)),
+                      fontSize: 20,
+                      letterSpacing: -0.3)),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        // bottom actions per spec 6 (kept inside page so global nav stays)
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 3.2,
           children: [
-            _ActionBtn('Add challenge', Icons.add, () {}),
-            _ActionBtn('Participate', Icons.check, onOpenLogin),
-            _ActionBtn('History', Icons.history, () {}),
-            _ActionBtn('Add prize', Icons.payments, () {}),
+            _PrimaryAction('Participate', Icons.check_circle, onOpenLogin),
+            _SecondaryAction('Add challenge', Icons.add, () {}),
+            _SecondaryAction('History', Icons.history, () {}),
+            _SecondaryAction('Add prize', Icons.payments, () {}),
           ],
         ),
       ],
@@ -647,34 +751,285 @@ class ChallengesScreen extends StatelessWidget {
   }
 }
 
-class _ActionBtn extends StatelessWidget {
-  final String label;
+class _ChChallengeCard extends StatelessWidget {
   final IconData icon;
-  final VoidCallback onTap;
-  const _ActionBtn(this.label, this.icon, this.onTap);
+  final String title;
+  final String meta;
+  final String status;
+  final bool isJoin;
+  final VoidCallback? onTap;
+  const _ChChallengeCard(
+      {required this.icon,
+      required this.title,
+      required this.meta,
+      required this.status,
+      required this.isJoin,
+      this.onTap});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-            color: FitColors.volt,
-            borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(13),
+        decoration: cardDec(),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: const Color(0xFF0F1113)),
-            const SizedBox(width: 6),
-            Text(label,
-                style: const TextStyle(
-                    color: Color(0xFF0F1113),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 12.5)),
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                  color: FitColors.surface2,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: FitColors.line)),
+              child: Icon(icon, size: 18, color: FitColors.text),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 13.5)),
+                  Text(meta,
+                      style: const TextStyle(
+                          fontSize: 12, color: FitColors.muted)),
+                ])),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+              decoration: BoxDecoration(
+                  color: isJoin
+                      ? FitColors.volt.withOpacity(0.13)
+                      : FitColors.heat.withOpacity(0.13),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      color: isJoin
+                          ? FitColors.volt.withOpacity(0.22)
+                          : FitColors.heat.withOpacity(0.20))),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(isJoin ? '●' : '✕',
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: isJoin ? FitColors.volt : FitColors.heat)),
+                  const SizedBox(width: 4),
+                  Text(status,
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: isJoin ? FitColors.volt : FitColors.heat)),
+                ],
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _LbRow extends StatelessWidget {
+  final int rank;
+  final String initials;
+  final String name;
+  final String attempts;
+  final String pts;
+  final Color rankColor;
+  const _LbRow(
+      {required this.rank,
+      required this.initials,
+      required this.name,
+      required this.attempts,
+      required this.pts,
+      required this.rankColor});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+                color: rankColor, shape: BoxShape.circle),
+            alignment: Alignment.center,
+            child: Text('$rank',
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    color: rank == 1 ? const Color(0xFF121212) : const Color(0xFF121212))),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+                color: rank == 1
+                    ? FitColors.volt
+                    : const Color(0xFF3A4047),
+                shape: BoxShape.circle),
+            alignment: Alignment.center,
+            child: Text(initials,
+                style: const TextStyle(
+                    fontSize: 11, fontWeight: FontWeight.w800)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+              child: Text(name,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 13))),
+          Text('$attempts · ',
+              style:
+                  const TextStyle(fontSize: 11.5, color: FitColors.muted)),
+          Text('$pts pts',
+              style: const TextStyle(
+                  fontSize: 12, color: FitColors.volt, fontWeight: FontWeight.w700)),
+        ],
+      ),
+    );
+  }
+}
+
+class _LbSelfRow extends StatelessWidget {
+  const _LbSelfRow();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 6),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          color: FitColors.volt.withOpacity(0.07),
+          border: Border.all(color: FitColors.volt.withOpacity(0.18)),
+          borderRadius: BorderRadius.circular(12)),
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: const BoxDecoration(
+                color: Color(0xFFC9A86A), shape: BoxShape.circle),
+            alignment: Alignment.center,
+            child: const Text('3',
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF121212))),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 30,
+            height: 30,
+            decoration: const BoxDecoration(
+                color: FitColors.volt, shape: BoxShape.circle),
+            alignment: Alignment.center,
+            child: const Text('JM',
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF121212))),
+          ),
+          const SizedBox(width: 8),
+          const Expanded(
+              child: Row(
+            children: [
+              Text('Jordan (you)',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700, fontSize: 13)),
+              SizedBox(width: 6),
+              _YouBadge(),
+            ],
+          )),
+          const Text('10 · ',
+              style: TextStyle(fontSize: 11.5, color: FitColors.muted)),
+          const Text('840 pts',
+              style: TextStyle(
+                  fontSize: 12, color: FitColors.volt, fontWeight: FontWeight.w700)),
+        ],
+      ),
+    );
+  }
+}
+
+class _YouBadge extends StatelessWidget {
+  const _YouBadge();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      decoration: BoxDecoration(
+          color: FitColors.volt, borderRadius: BorderRadius.circular(20)),
+      child: const Text('YOU',
+          style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF121212))),
+    );
+  }
+}
+
+class _PrizeIcon extends StatelessWidget {
+  const _PrizeIcon();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 42,
+      height: 42,
+      decoration: BoxDecoration(
+          color: FitColors.volt.withOpacity(0.14),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: FitColors.volt.withOpacity(0.22))),
+      child: const Icon(Icons.emoji_events, color: FitColors.volt, size: 22),
+    );
+  }
+}
+
+class _PrimaryAction extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+  const _PrimaryAction(this.label, this.icon, this.onTap);
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon, size: 16, color: const Color(0xFF121212)),
+      label: Text(label,
+          style: const TextStyle(
+              color: Color(0xFF121212),
+              fontWeight: FontWeight.w900,
+              fontSize: 12.5)),
+      style: FilledButton.styleFrom(
+          backgroundColor: FitColors.volt,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+    );
+  }
+}
+
+class _SecondaryAction extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+  const _SecondaryAction(this.label, this.icon, this.onTap);
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon, size: 16, color: FitColors.text),
+      label: Text(label,
+          style: const TextStyle(
+              color: FitColors.text,
+              fontWeight: FontWeight.w700,
+              fontSize: 12.5)),
+      style: OutlinedButton.styleFrom(
+          backgroundColor: FitColors.surface,
+          side: const BorderSide(color: FitColors.line),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
     );
   }
 }

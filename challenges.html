@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FitRix — Challenges</title>
+<style>
+:root{--bg:#121212;--surface:#1E1E1E;--surface2:#2A2A2A;--line:#2E3338;--line-hover:#3A4047;--text:#EDEFE9;--muted:#9AA0A6;--volt:#C6FF00;--volt-hover:#D4FF33;--heat:#FF5B3D;--r:16px;--r-lg:18px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;min-height:100vh;padding-bottom:78px}
+.navbar{position:sticky;top:0;z-index:20;background:rgba(18,18,18,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:12px 20px}
+.nav-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--volt);display:grid;place-items:center;font-weight:900;color:#121212;font-size:15px}
+.brand{font-weight:900;font-size:20px;letter-spacing:-.6px;white-space:nowrap}.brand span{color:var(--volt)}
+.nav-center{flex:1;display:flex;justify-content:center;max-width:520px;margin:0 auto}
+.search-wrap{display:flex;align-items:center;flex:1;max-width:520px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 14px;height:40px;transition:.15s}
+.search-wrap:focus-within{border-color:var(--line-hover);background:var(--surface2)}
+.search-wrap input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:13.5px;width:100%}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-icon{color:var(--muted);margin-right:10px}
+.search-clear{background:none;border:0;color:var(--muted);cursor:pointer;padding:4px 6px;display:none}
+.search-clear.show{display:block}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.iconbtn{background:var(--surface);border:1px solid var(--line);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;position:relative}
+.iconbtn:hover{border-color:var(--line-hover);background:var(--surface2)}
+.badge-dot{position:absolute;top:-1px;right:-1px;width:9px;height:9px;background:var(--volt);border-radius:50%;border:2px solid var(--bg)}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--volt),#8BC500);display:grid;place-items:center;font-weight:800;color:#121212;font-size:13px;cursor:pointer;border:1.5px solid var(--line)}
+.search-toggle{display:none;background:var(--surface);border:1px solid var(--line);border-radius:50%;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+@media(max-width:720px){
+  .nav-center{position:absolute;left:12px;right:12px;top:62px;background:var(--bg);padding:10px 12px 12px;border-bottom:1px solid var(--line);display:none}
+  .nav-center.open{display:flex}
+  .search-toggle{display:flex}
+}
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px 24px}
+.ch-header{margin-bottom:4px}
+.ch-title{font-weight:900;font-size:26px;letter-spacing:-.6px}
+.ch-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
+.sec{margin:22px 0 10px}
+.sec h3{font-size:11.5px;letter-spacing:.8px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px}
+.muted{color:var(--muted);font-size:12px}
+.video-cover{height:170px;position:relative;overflow:hidden;border-radius:12px;background:
+  linear-gradient(105deg, rgba(198,255,0,.16) 0%, transparent 45%),
+  linear-gradient(to top, rgba(0,0,0,.58) 0%, rgba(0,0,0,.15) 55%, transparent 100%),
+  radial-gradient(ellipse at 75% 28%, rgba(198,255,0,.18), transparent 42%),
+  linear-gradient(135deg,#1B2600 0%,#243600 32%,#0F1400 72%, #1A1A1A 100%);
+  display:flex;align-items:center;justify-content:center}
+.video-cover::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg, transparent, transparent 36px, rgba(255,255,255,.02) 36px, rgba(255,255,255,.02) 37px);opacity:.45}
+.play-btn{position:relative;z-index:1;width:54px;height:54px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.play-btn span{margin-left:2px;font-size:20px;color:#121212}
+.video-meta{position:absolute;bottom:10px;left:10px;right:10px;z-index:1;display:flex;justify-content:space-between;align-items:center}
+.video-badge{background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:10.5px;font-weight:700;padding:5px 8px;border-radius:7px}
+.video-time{background:rgba(0,0,0,.65);color:#fff;font-size:10.5px;font-weight:600;padding:4px 6px;border-radius:6px}
+.ch-card{padding:13px 14px;border-radius:var(--r);display:flex;align-items:center;gap:12px;transition:.15s;margin-bottom:10px}
+.ch-card:hover{border-color:var(--line-hover)}
+.ch-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:15px;flex-shrink:0;background:var(--surface2);border:1px solid var(--line);color:var(--text)}
+.pill{font-size:11px;font-weight:800;padding:6px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;letter-spacing:.1px}
+.pill-join{background:rgba(198,255,0,.13);color:var(--volt);border-color:rgba(198,255,0,.22)}
+.pill-full{background:rgba(255,91,61,.13);color:var(--heat);border-color:rgba(255,91,61,.20)}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+.lb-row+.lb-row{border-top:1px solid var(--line)}
+.lb-rank{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900;flex-shrink:0}
+.rank-1{background:var(--volt);color:#121212}.rank-2{background:#E8E8E8;color:#121212}.rank-3{background:#C9A86A;color:#121212}
+.lb-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0;color:#fff}
+.lb-row.self{background:rgba(198,255,0,.07);border:1px solid rgba(198,255,0,.18);border-radius:12px;padding:10px 10px;margin-top:6px}
+.prize-card{display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:var(--r);background:linear-gradient(135deg, rgba(198,255,0,.10), transparent 60%), var(--surface);border:1px solid rgba(198,255,0,.18)}
+.prize-left{display:flex;align-items:center;gap:12px}
+.prize-icon{width:42px;height:42px;border-radius:12px;background:rgba(198,255,0,.14);border:1px solid rgba(198,255,0,.22);display:grid;place-items:center;font-size:20px}
+.prize-amt{font-weight:900;font-size:20px;color:var(--volt);letter-spacing:-.3px}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.btn-primary{background:var(--volt);color:#121212;border:none;border-radius:12px;padding:13px;font-weight:900;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:13px;font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn-primary:hover{background:var(--volt-hover)}.btn-secondary:hover{border-color:var(--line-hover);background:var(--surface2)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(18,18,18,.98);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px 14px;z-index:20}
+.bottom-nav button{background:none;border:none;color:var(--muted);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bottom-nav button.active{color:var(--volt)}
+.bottom-nav span{font-size:18px}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-left"><div class="logo">F</div><div class="brand">FIT<span>RIX</span></div></div>
+  <div class="nav-center" id="navCenter">
+    <label class="search-wrap"><span class="search-icon">⌕</span><input id="universalSearch" placeholder="Search challenges" autocomplete="off"><button class="search-clear" id="clearSearch">✕</button></label>
+  </div>
+  <div class="nav-right">
+    <button class="search-toggle" id="searchToggle">⌕</button>
+    <button class="iconbtn" onclick="location.href='home.html'">◈<span class="badge-dot"></span></button>
+    <div class="avatar">JM</div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <div class="ch-header"><h1 class="ch-title">Challenges</h1><div class="ch-sub">Today • 3 active • 12 Sept</div></div>
+
+  <div class="sec"><h3>Today challenges</h3></div>
+  <div class="card ch-card" data-search="hiit circuit 6:30 coach rae strength join">
+    <div class="ch-icon">⚡</div>
+    <div style="flex:1;min-width:0"><b style="font-size:13.5px">HIIT Circuit</b><div class="muted">⏱ 6:30 PM · Coach Rae · Strength</div></div>
+    <span class="pill pill-join">● Join</span>
+  </div>
+  <div class="card ch-card" data-search="power yoga 7:15 coach tom flex full">
+    <div class="ch-icon">🧘</div>
+    <div style="flex:1;min-width:0"><b style="font-size:13.5px">Power Yoga</b><div class="muted">⏱ 7:15 PM · Coach Tom · Flex</div></div>
+    <span class="pill pill-full">✕ Full</span>
+  </div>
+  <div class="card ch-card" data-search="spin burn 8:00 coach alex cardio join">
+    <div class="ch-icon">🚴</div>
+    <div style="flex:1;min-width:0"><b style="font-size:13.5px">Spin &amp; Burn</b><div class="muted">⏱ 8:00 PM · Coach Alex · Cardio</div></div>
+    <span class="pill pill-join">● Join</span>
+  </div>
+
+  <div class="sec"><h3>Challenger spotlight</h3></div>
+  <div class="card" style="padding:0;overflow:hidden" data-search="challenger spotlight video">
+    <div class="video-cover"><div class="play-btn"><span>▶</span></div><div class="video-meta"><span class="video-badge">▶ 30s preview</span><span class="video-time">0:30</span></div></div>
+    <div style="padding:12px 14px"><b style="font-size:13px">Challenger intro — September Sweat</b><div class="muted" style="margin-top:2px">Top form this week • Tap to watch full</div></div>
+  </div>
+
+  <div class="sec"><h3>Leaderboard</h3></div>
+  <div class="card" style="padding:12px 14px">
+    <div class="lb-row"><span class="lb-rank rank-1">1</span><span class="lb-avatar" style="background:linear-gradient(135deg,#6FAE1C,#C6FF00);color:#121212">SK</span><span style="flex:1;font-weight:600;font-size:13px">Sara K.</span><span class="muted" style="font-size:11.5px">14 · <b style="color:var(--volt)">980 pts</b></span></div>
+    <div class="lb-row"><span class="lb-rank rank-2">2</span><span class="lb-avatar" style="background:#3A4047;color:#fff">DM</span><span style="flex:1;font-weight:600;font-size:13px">Diego M.</span><span class="muted" style="font-size:11.5px">12 · <b style="color:var(--volt)">920 pts</b></span></div>
+    <div class="lb-row self"><span class="lb-rank rank-3">3</span><span class="lb-avatar" style="background:var(--volt);color:#121212">JM</span><span style="flex:1;font-weight:700;font-size:13px">Jordan (you) <span style="background:var(--volt);color:#121212;font-size:9px;padding:2px 5px;border-radius:20px;margin-left:4px">YOU</span></span><span class="muted" style="font-size:11.5px">10 · <b style="color:var(--volt)">840 pts</b></span></div>
+  </div>
+
+  <div class="sec"><h3>Prize pool</h3></div>
+  <div class="prize-card">
+    <div class="prize-left"><div class="prize-icon">🏆</div><div><div class="muted" style="font-size:11px;letter-spacing:.5px;text-transform:uppercase">Total pool</div><div class="muted" style="font-size:11px">Set by gym &amp; participants</div></div></div>
+    <div class="prize-amt">₹5,000</div>
+  </div>
+
+  <div class="action-grid">
+    <button class="btn-primary">✓ Participate</button>
+    <button class="btn-secondary">＋ Add challenge</button>
+    <button class="btn-secondary">◷ History</button>
+    <button class="btn-secondary">₹ Add prize</button>
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <button onclick="location.href='home.html'"><span>⌂</span>Home</button>
+  <button class="active"><span>🏆</span>Challenges</button>
+  <button><span>🔥</span>Streaks</button>
+  <button><span>◈</span>Wallet</button>
+  <button><span>☺</span>Profile</button>
+</nav>
+
+<script>
+const input=document.getElementById('universalSearch'),clearBtn=document.getElementById('clearSearch'),navCenter=document.getElementById('navCenter'),toggle=document.getElementById('searchToggle');
+toggle?.addEventListener('click',()=>navCenter.classList.toggle('open'));
+function filter(q){q=(q||'').toLowerCase().trim();document.querySelectorAll('[data-search]').forEach(c=>{const hay=(c.getAttribute('data-search')+' '+c.textContent).toLowerCase();c.classList.toggle('hidden', q && !hay.includes(q));});clearBtn.classList.toggle('show',!!q);}
+input.addEventListener('input',e=>filter(e.target.value));
+clearBtn.addEventListener('click',()=>{input.value='';filter('');input.focus();});
+</script>
+</body>
+</html>
