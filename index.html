@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fitomatic - Portal</title>
+<title>Fitrix — Train. Track. Transform.</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
 body{background:#f1f5f9;color:#0f172a;display:flex;min-height:100vh}
@@ -55,12 +55,71 @@ td{padding:10px 12px;font-size:13px;border-top:1px solid #f1f5f9}
 .filters input,.filters select{padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;background:#fff}
 .grid2{display:grid;grid-template-columns:1.6fr .9fr;gap:14px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.login-wrap{min-height:100vh;background:#0f172a;display:grid;place-items:center;padding:20px}
-.login-card{background:#fff;border-radius:16px;padding:24px;width:360px;max-width:100%}
-.login-card h2{font-size:18px}
-.login-card p{font-size:12px;color:#64748b;margin:4px 0 14px}
-.login-card label{font-size:12px;font-weight:600;display:block;margin:8px 0 4px}
-.login-card input{width:100%;padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px}
+/* === FITRIX LOGIN — one-view fit (no scroll) === */
+.login-wrap{position:fixed;inset:0;z-index:50;background:#edeef1;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden;height:100vh;height:100dvh}
+.login-shell{width:min(1028px,100%);height:min(640px,calc(100vh - 32px));height:min(640px,calc(100dvh - 32px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);background:#fff;border-radius:24px;overflow:hidden;display:grid;grid-template-columns:520px 1fr;box-shadow:0 8px 32px rgba(15,23,42,.08);align-items:stretch}
+.login-left{background:#fff;padding:22px 44px 18px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.fitrix-logo{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 0 14px 0;width:100%}
+.fitrix-logo svg{display:block;width:48px;height:36px}
+.fitrix-wordmark{font-size:28px;font-weight:900;letter-spacing:.8px;transform:skewX(-6deg);line-height:1;margin-top:1px}
+.fitrix-tagline{font-size:9px;letter-spacing:2.4px;font-weight:700;color:#111}
+.fitrix-tagline em{color:#8FC300;font-style:normal}
+.login-left h2{font-size:19px;font-weight:800;margin:0 0 2px;display:flex;align-items:center;gap:6px;letter-spacing:-.2px;color:#0f172a}
+.login-left .sub{font-size:12.5px;color:#7d8b9a;margin:0 0 12px;line-height:1.3}
+.fx-label{font-size:10px;font-weight:800;letter-spacing:.7px;color:#0f172a;margin:10px 0 5px;display:block}
+.fx-input{position:relative;display:block}
+.fx-input svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#94a3b8;pointer-events:none}
+.fx-input input{width:100%;height:42px;padding:0 42px 0 38px;border:1.4px solid #e6e8ee;border-radius:10px;background:#fff;font-size:13.5px;color:#0f172a;outline:0;transition:.15s}
+.fx-input input::placeholder{color:#9aa3b2}
+.fx-input input:focus{border-color:#B6FF00;box-shadow:0 0 0 3px rgba(182,255,0,.18)}
+.fx-input .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;width:32px;height:32px;display:grid;place-items:center;color:#94a3b8;cursor:pointer;border-radius:6px}
+.fx-input .eye:hover{background:#f1f5f9}
+.fx-row{display:flex;justify-content:space-between;align-items:center;margin:10px 0 14px;gap:12px}
+.fx-check{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#6b7a8d;cursor:pointer;user-select:none}
+.fx-check input{width:15px;height:15px;accent-color:#111;border-radius:3px;margin:0}
+.fx-link{font-size:12.5px;color:#9CC500;font-weight:700;text-decoration:none;white-space:nowrap}
+.fx-link:hover{text-decoration:underline}
+.btn-lime{width:100%;height:44px;background:#B6FF00;color:#0a0a0a;border:0;border-radius:10px;padding:0 18px;font-weight:800;font-size:13px;letter-spacing:.6px;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s;position:relative}
+.btn-lime:hover{background:#A8EC00}
+.btn-lime:active{transform:scale(.99)}
+.btn-lime svg{position:absolute;right:18px}
+.fx-divider{display:flex;align-items:center;gap:14px;margin:14px 0 12px;color:#94a3b8;font-size:11px;letter-spacing:.3px;font-weight:500}
+.fx-divider::before,.fx-divider::after{content:"";flex:1;height:1px;background:#e6e8ee}
+.fx-socials{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fx-social{height:42px;border:1.4px solid #e6e8ee;background:#fff;border-radius:10px;display:grid;place-items:center;cursor:pointer;transition:.15s}
+.fx-social:hover{border-color:#cbd5e1;background:#f8fafc;transform:translateY(-1px)}
+.fx-social svg{width:20px;height:20px}
+.fx-bottom{margin-top:12px;text-align:center;font-size:12.5px;color:#94a3b8}
+.fx-bottom a{color:#9CC500;font-weight:700;text-decoration:none}
+.fx-bottom a:hover{text-decoration:underline}
+/* right hero — fitment: image covers without stretch, text inset aligns to mock */
+.login-right{position:relative;background:#0a0a0a;overflow:hidden;display:block;min-height:100%}
+.login-right img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 18%;filter:grayscale(100%) contrast(1.06) brightness(.95);display:block}
+.login-right::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.72) 100%)}
+.hero-top{position:absolute;top:20px;right:20px;z-index:2;color:#B6FF00;font-weight:800;letter-spacing:5px;font-size:13px;line-height:1}
+.hero-copy{position:absolute;bottom:36px;left:30px;right:30px;z-index:2;color:#fff}
+.hero-copy h3{font-size:30px;font-weight:900;line-height:.98;letter-spacing:.2px;transform:skewX(-5deg);text-transform:uppercase}
+.hero-copy h3 em{color:#B6FF00;font-style:normal}
+.hero-copy i{display:block;width:44px;height:3px;background:#B6FF00;margin-top:14px;border-radius:2px}
+@media(max-height:700px){
+  .login-shell{height:min(580px,calc(100vh - 24px));height:min(580px,calc(100dvh - 24px))}
+  .login-left{padding:18px 44px 14px}
+  .fitrix-logo{margin:0 0 10px}
+  .fx-label{margin:8px 0 4px}
+  .fx-row{margin:8px 0 12px}
+  .fx-divider{margin:12px 0 10px}
+  .fx-bottom{margin-top:10px}
+}
+@media(max-width:960px){
+  .login-wrap{overflow:auto;padding:16px;align-items:center}
+  .login-shell{grid-template-columns:1fr;max-width:440px;height:auto;max-height:none;min-height:auto}
+  .login-right{display:none}
+  .login-left{padding:28px 24px;overflow:visible}
+}
+@media(max-width:480px){
+  .login-wrap{padding:12px;align-items:flex-start}
+  .login-shell{border-radius:18px}
+}
 @media(max-width:900px){
   .sidebar{position:fixed;left:-240px;z-index:20;transition:.2s}
   .sidebar.open{left:0}
@@ -73,16 +132,73 @@ td{padding:10px 12px;font-size:13px;border-top:1px solid #f1f5f9}
 </style>
 </head>
 <body>
-<!-- LOGIN -->
+<!-- LOGIN — Fitrix pixel-match -->
 <div id="loginPage" class="login-wrap">
-  <div class="login-card">
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><div class="brand-icon">F</div><b>FITO<span style="color:#ef4444">MATIC</span></b></div>
-    <h2>Login to Fitomatic</h2><p>PayPer Software • Gym Management</p>
-    <label>Only Email Id</label><input id="email" value="admin@fitomatic.com">
-    <label>Password</label><input id="pass" type="password" value="123456">
-    <button onclick="login()" class="btn btn-red" style="width:100%;margin-top:14px">Login</button>
-    <div style="display:flex;justify-content:space-between;margin-top:10px"><a href="#" style="font-size:12px;color:#ef4444">Resend OTP</a><a href="#" style="font-size:12px;color:#64748b">Forgotten Password?</a></div>
-    <p style="text-align:center;margin-top:12px;font-size:11px">Handcrafted in INDIA by PayPer</p>
+  <div class="login-shell">
+    <!-- LEFT FORM -->
+    <div class="login-left">
+      <div class="fitrix-logo">
+        <!-- FITRIX mark — exact: black F with lime slash; replace with image if you have logo.png -->
+        <svg width="56" height="42" viewBox="0 0 56 42" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Fitrix logo">
+          <path d="M12 2 L52 2 L48 12 L16 12 L14 18 L34 18 L30 28 L10 28 Z" fill="#0a0a0a"/>
+          <path d="M14 18 L30 28 L10 28 Z" fill="#B6FF00"/>
+          <!-- lime diagonal clipped to F lower leg -->
+        </svg>
+        <div class="fitrix-wordmark">FITRIX</div>
+        <div class="fitrix-tagline">TRAIN. TRACK. <em>TRANSFORM.</em></div>
+      </div>
+
+      <h2>Welcome back <span style="color:#B6FF00">⚡</span></h2>
+      <p class="sub">Log in to continue your fitness journey</p>
+
+      <label class="fx-label">EMAIL</label>
+      <label class="fx-input" for="email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <input id="email" type="email" placeholder="Enter your email" value="admin@fitomatic.com" autocomplete="email">
+      </label>
+
+      <label class="fx-label">PASSWORD</label>
+      <label class="fx-input" for="pass">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="10" width="10" height="9" rx="1.5"/><path d="M10 10V7a2 2 0 0 1 4 0v3"/><circle cx="12" cy="14.5" r="1.2"/></svg>
+        <input id="pass" type="password" placeholder="Enter your password" value="123456" autocomplete="current-password">
+        <button type="button" class="eye" aria-label="Show password" onclick="togglePass()"><svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="20" height="20"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3.5"/></svg></button>
+      </label>
+
+      <div class="fx-row">
+        <label class="fx-check"><input id="remember" type="checkbox"> Remember me</label>
+        <a class="fx-link" href="#">Forgot Password?</a>
+      </div>
+
+      <button onclick="login()" class="btn-lime">LOG IN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M5 12h12"/><path d="M13 6l6 6-6 6"/></svg></button>
+
+      <div class="fx-divider">OR CONTINUE WITH</div>
+
+      <div class="fx-socials">
+        <button type="button" class="fx-social" aria-label="Continue with Google">
+          <!-- Google G -->
+          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.92-6.16-4.51H2.18v2.84C3.98 20.98 7.69 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09A6.96 6.96 0 0 1 5.5 12s0-.74.34-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.78.42 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.69 1 3.98 3.02 2.18 7.07l3.66 2.84c.87-2.59 3.3-4.51 6.16-4.51z"/></svg>
+        </button>
+        <button type="button" class="fx-social" aria-label="Continue with Apple">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.7 13.5c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.4.8-.7 0-1.7-.8-2.8-.7-1.4.1-2.7.8-3.4 2.1-1.5 2.6-.4 6.4 1 8.5.7 1 1.6 2.2 2.7 2.1 1.1 0 1.5-.7 2.8-.7 1.3 0 1.7.7 2.8.7 1.1 0 1.9-1 2.6-2.1.8-1.1 1.1-2.2 1.1-2.2s-1.4-.5-1.4-2.1zm-2.9-6.6c.6-.7.9-1.7.8-2.7-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.6-.8 2.6.9.1 1.7-.4 2.3-1.1z"/></svg>
+        </button>
+        <button type="button" class="fx-social" aria-label="Continue with Phone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg>
+        </button>
+      </div>
+
+      <p class="fx-bottom">New here? <a href="#">Create Account</a></p>
+    </div>
+
+    <!-- RIGHT HERO — image placeholder: replace src below with your image -->
+    <div class="login-right">
+      <!-- TODO: replace with your image file. Example: src="hero.jpg" or leave empty for placeholder -->
+      <img id="loginHeroImg" src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=900&q=80&auto=format&fit=crop" alt="Fitrix athlete" onerror="this.style.display='none'">
+      <div class="hero-top">///</div>
+      <div class="hero-copy">
+        <h3>DISCIPLINE<br><em>TODAY.</em><br>STRENGTH<br><em>TOMORROW.</em></h3>
+        <i></i>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -238,6 +354,12 @@ td{padding:10px 12px;font-size:13px;border-top:1px solid #f1f5f9}
 </div>
 
 <script>
+function togglePass(){
+  const p=document.getElementById('pass');
+  const is=p.type==='password';
+  p.type=is?'text':'password';
+  document.getElementById('eyeIcon').style.opacity=is?1:.5;
+}
 function login(){
   document.getElementById('loginPage').style.display='none';
   const app=document.getElementById('app');
@@ -245,8 +367,12 @@ function login(){
 }
 function logout(){
   document.getElementById('app').style.display='none';
-  document.getElementById('loginPage').style.display='grid';
+  document.getElementById('loginPage').style.display='flex';
 }
+// Enter to login
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && document.getElementById('loginPage').style.display!=='none') login();
+});
 const titles={
   dashboard:['Dashboard','Welcome back, track your gym at a glance'],
   members:['Members','All registered members'],
